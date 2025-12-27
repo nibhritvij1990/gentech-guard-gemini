@@ -1,26 +1,54 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-primary-blue: #00aaff;
+  --color-dark-bg: #050505;
+  --color-elevated-bg: #111111;
+  --color-text-white: #ffffff;
+  --color-text-grey: #b3b3b3;
+  --color-action-red: #d32f2f;
+
+  --font-montserrat: "var(--font-montserrat)";
+  --font-roboto: "var(--font-roboto)";
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+:root {
+  --background: #050505;
+  --foreground: #ffffff;
+  --primary-blue: #00aaff;
+  --elevated-bg: #111111;
+  --text-grey: #b3b3b3;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-roboto), sans-serif;
+  overflow-x: hidden;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-montserrat), sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.glass {
+  background: rgba(17, 17, 17, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.neon-glow {
+  box-shadow: 0 0 15px rgba(0, 170, 255, 0.4);
+}
+
+.blue-text {
+  color: var(--primary-blue);
 }
