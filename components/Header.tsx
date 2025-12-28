@@ -5,23 +5,25 @@ import Link from "next/link";
 import { Menu, X, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 const navLinks = [
-    //  { name: "Home", href: "/" },
-    { name: "About Us", href: "/#about" },
+    { name: "About Us", href: "/about" },
     { name: "Solutions", href: "/#solutions" },
+    { name: "Process", href: "/#process" },
     { name: "E-Warranty", href: "/warranty" },
     { name: "Contact Us", href: "/#contact" },
-    { name: "Become a Dealer", href: "/dealer" },
 ];
 
 export default function Header() {
     const [isOpen, setIsOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
+    const pathname = usePathname();
+    const isAboutPage = pathname === "/about";
 
     useEffect(() => {
         const handleScroll = () => {
-            setScrolled(window.scrollY > 20);
+            setScrolled(window.scrollY > 120);
         };
         window.addEventListener("scroll", handleScroll);
         return () => window.removeEventListener("scroll", handleScroll);
@@ -31,20 +33,29 @@ export default function Header() {
         <header
             className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${scrolled ? "glass py-3" : "bg-transparent py-5"
                 }`}
+            style={{
+                background: "linear-gradient(to right, #000, #111111b3 50%)",
+            }}
         >
             <div className="container mx-auto px-4 md:px-8 flex items-center justify-between">
-                <Link href="/" className="flex items-center gap-3 relative z-50 group">
-                    <div className="w-10 h-10 md:w-12 md:h-12 relative">
+                <Link href="/" className="relative z-50">
+                    <motion.div
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{
+                            opacity: isAboutPage || scrolled ? 1 : 0,
+                            x: isAboutPage || scrolled ? 0 : -10
+                        }}
+                        transition={{ duration: 0.5, ease: "easeOut" }}
+                        className="w-40 md:w-48 h-10 md:h-12 relative"
+                    >
                         <Image
-                            src="/assets/logo-final.png"
+                            src="/assets/logo-final-wide.png"
                             alt="Gentech Guard"
                             fill
                             className="object-contain"
+                            priority
                         />
-                    </div>
-                    <span className="text-xl font-black tracking-tighter text-white font-montserrat hidden group-hover:text-primary-blue transition-colors">
-                        GENTECH <span className="text-primary-blue">GUARD</span>
-                    </span>
+                    </motion.div>
                 </Link>
 
                 {/* DESKTOP NAV */}

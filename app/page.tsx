@@ -2,6 +2,7 @@ import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import WhySection from "@/components/WhySection";
 import SolutionsSection from "@/components/SolutionsSection";
+import ProcessSection from "@/components/ProcessSection";
 import DealerMap from "@/components/DealerMap";
 import ContactForm from "@/components/ContactForm";
 import Footer from "@/components/Footer";
@@ -12,6 +13,7 @@ export default function Home() {
       <Header />
       <Hero />
       <WhySection />
+      <ProcessSection />
       <SolutionsSection />
 
       <DealerMap />

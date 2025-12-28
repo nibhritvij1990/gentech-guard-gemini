@@ -1,45 +1,131 @@
+"use client";
+
 import Link from "next/link";
-import { Mail, Phone, MapPin, Instagram, Facebook, Youtube } from "lucide-react";
+import Image from "next/image";
+import { motion } from "framer-motion";
+import { Mail, Phone, MapPin, Instagram, Facebook, Youtube, ArrowUpRight, Zap } from "lucide-react";
+
+const navLinks = [
+    { name: "Home", href: "/" },
+    { name: "About Us", href: "/about" },
+    { name: "Solutions", href: "/#solutions" },
+    { name: "Process", href: "/#process" },
+    { name: "E-Warranty", href: "/warranty" },
+    { name: "Contact", href: "/#contact" }
+];
+
+const products = [
+    "Gloss PPF",
+    "Matte PPF",
+    "Sun Film"
+];
 
 export default function Footer() {
     return (
-        <footer className="bg-elevated-bg border-t border-white/10 pt-20 pb-10">
-            <div className="container mx-auto px-4 md:px-8">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-20">
-                    {/* BRAND */}
-                    <div className="col-span-1 md:col-span-2 lg:col-span-1">
-                        <Link href="/" className="flex items-center gap-2 mb-6">
-                            <div className="w-8 h-8 bg-primary-blue rounded-md flex items-center justify-center font-bold text-white tracking-tighter neon-glow">
-                                G
-                            </div>
-                            <span className="text-xl font-black tracking-tighter text-white font-montserrat">
-                                GENTECH <span className="text-primary-blue">GUARD</span>
-                            </span>
+        <footer className="relative bg-[#030303] overflow-hidden">
+            {/* Top Accent Line */}
+            <div className="h-[1px] w-full bg-gradient-to-r from-transparent via-primary-blue/50 to-transparent" />
+
+            {/* Decorative Background */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-primary-blue/5 rounded-full blur-[150px] pointer-events-none" />
+
+            {/* CTA Section */}
+            <div className="container mx-auto px-4 md:px-8 pt-24 pb-16 relative z-10">
+                <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    className="text-center mb-20"
+                >
+                    <h2 className="text-4xl md:text-6xl font-black text-white uppercase tracking-tighter mb-6">
+                        Ready to <span className="text-primary-blue">Protect</span>?
+                    </h2>
+                    <p className="text-text-grey text-lg font-medium max-w-xl mx-auto mb-10">
+                        Join India's fastest growing network of certified automotive protection specialists.
+                    </p>
+                    <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                        <Link
+                            href="/#contact"
+                            className="group inline-flex items-center gap-3 px-8 py-4 bg-primary-blue text-white font-black uppercase tracking-widest rounded-full hover:bg-white hover:text-dark-bg transition-all duration-300 shadow-[0_0_30px_rgba(0,170,255,0.3)]"
+                        >
+                            Become a Dealer
+                            <ArrowUpRight size={20} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                         </Link>
-                        <p className="text-text-grey text-sm font-medium leading-relaxed mb-8 max-w-xs">
-                            Next-generation automotive protection solutions. We bridge the gap between
-                            professional standards and real-world affordability.
+                        <Link
+                            href="/warranty"
+                            className="inline-flex items-center gap-3 px-8 py-4 border border-white/20 text-white font-black uppercase tracking-widest rounded-full hover:border-primary-blue hover:text-primary-blue transition-all duration-300"
+                        >
+                            Check Warranty
+                        </Link>
+                    </div>
+                </motion.div>
+
+                {/* Main Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-8 py-16 border-y border-white/5">
+                    {/* Brand Column */}
+                    <div className="lg:col-span-4">
+                        <Link href="/" className="inline-block mb-8">
+                            <div className="w-48 h-12 relative">
+                                <Image
+                                    src="/assets/logo-final-wide.png"
+                                    alt="Gentech Guard"
+                                    fill
+                                    className="object-contain object-left"
+                                />
+                            </div>
+                        </Link>
+                        <p className="text-text-grey text-sm font-medium leading-relaxed mb-8 max-w-sm">
+                            Next-generation automotive protection solutions backed by industry expertise and advanced Aliphatic TPU technology.
                         </p>
-                        <div className="flex gap-4">
-                            <a href="#" className="w-10 h-10 rounded-lg bg-dark-bg border border-white/10 flex items-center justify-center text-text-grey hover:text-primary-blue hover:border-primary-blue transition-all">
-                                <Instagram size={20} />
-                            </a>
-                            <a href="#" className="w-10 h-10 rounded-lg bg-dark-bg border border-white/10 flex items-center justify-center text-text-grey hover:text-primary-blue hover:border-primary-blue transition-all">
-                                <Facebook size={20} />
-                            </a>
-                            <a href="#" className="w-10 h-10 rounded-lg bg-dark-bg border border-white/10 flex items-center justify-center text-text-grey hover:text-primary-blue hover:border-primary-blue transition-all">
-                                <Youtube size={20} />
-                            </a>
+
+                        {/* Social Icons */}
+                        <div className="flex gap-3">
+                            {[
+                                { icon: Instagram, label: "Instagram" },
+                                { icon: Facebook, label: "Facebook" },
+                                { icon: Youtube, label: "YouTube" }
+                            ].map(({ icon: Icon, label }) => (
+                                <a
+                                    key={label}
+                                    href="#"
+                                    aria-label={label}
+                                    className="group w-11 h-11 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-text-grey hover:text-white hover:border-primary-blue hover:bg-primary-blue/10 transition-all duration-300"
+                                >
+                                    <Icon size={18} className="group-hover:scale-110 transition-transform" />
+                                </a>
+                            ))}
                         </div>
                     </div>
 
-                    {/* QUICK LINKS */}
-                    <div>
-                        <h4 className="text-white font-black tracking-widest uppercase mb-8 text-sm">Navigation</h4>
-                        <ul className="flex flex-col gap-4">
-                            {["Home", "Solutions", "Process", "Warranty", "Locations"].map((item) => (
+                    {/* Navigation */}
+                    <div className="lg:col-span-2">
+                        <h4 className="text-[11px] font-black text-primary-blue tracking-[0.3em] uppercase mb-6">Navigation</h4>
+                        <ul className="flex flex-col gap-3">
+                            {navLinks.map((item) => (
+                                <li key={item.name}>
+                                    <Link
+                                        href={item.href}
+                                        className="group flex items-center gap-2 text-text-grey hover:text-white text-sm font-bold uppercase tracking-wider transition-colors"
+                                    >
+                                        <span className="w-0 h-[2px] bg-primary-blue group-hover:w-3 transition-all duration-300" />
+                                        {item.name}
+                                    </Link>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+
+                    {/* Products */}
+                    <div className="lg:col-span-2">
+                        <h4 className="text-[11px] font-black text-primary-blue tracking-[0.3em] uppercase mb-6">Products</h4>
+                        <ul className="flex flex-col gap-3">
+                            {products.map((item) => (
                                 <li key={item}>
-                                    <Link href={`/${item.toLowerCase()}`} className="text-text-grey hover:text-primary-blue text-sm font-bold uppercase tracking-wider transition-colors">
+                                    <Link
+                                        href="/#solutions"
+                                        className="group flex items-center gap-2 text-text-grey hover:text-white text-sm font-bold uppercase tracking-wider transition-colors"
+                                    >
+                                        <span className="w-0 h-[2px] bg-primary-blue group-hover:w-3 transition-all duration-300" />
                                         {item}
                                     </Link>
                                 </li>
@@ -47,48 +133,34 @@ export default function Footer() {
                         </ul>
                     </div>
 
-                    {/* SERVICES */}
-                    <div>
-                        <h4 className="text-white font-black tracking-widest uppercase mb-8 text-sm">Solutions</h4>
-                        <ul className="flex flex-col gap-4">
-                            {["Gloss PPF", "Matte PPF", "Ceramic Coating", "Sun Film", "Interior Protection"].map((item) => (
-                                <li key={item}>
-                                    <Link href="#solutions" className="text-text-grey hover:text-white text-sm font-medium transition-colors">
-                                        {item}
-                                    </Link>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-
-                    {/* CONTACT */}
-                    <div>
-                        <h4 className="text-white font-black tracking-widest uppercase mb-8 text-sm">Get In Touch</h4>
-                        <ul className="flex flex-col gap-6">
-                            <li className="flex items-start gap-4">
-                                <div className="text-primary-blue mt-1">
+                    {/* Contact */}
+                    <div className="lg:col-span-4">
+                        <h4 className="text-[11px] font-black text-primary-blue tracking-[0.3em] uppercase mb-6">Get In Touch</h4>
+                        <ul className="flex flex-col gap-5">
+                            <li className="group flex items-start gap-4">
+                                <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-primary-blue group-hover:border-primary-blue/50 transition-colors shrink-0">
                                     <Phone size={18} />
                                 </div>
                                 <div>
-                                    <p className="text-xs text-text-grey uppercase font-black tracking-tighter mb-1">Call Us</p>
+                                    <p className="text-[10px] text-text-grey uppercase font-black tracking-widest mb-1">Call Us</p>
                                     <p className="text-white font-bold text-sm">+91 911 222 3333</p>
                                 </div>
                             </li>
-                            <li className="flex items-start gap-4">
-                                <div className="text-primary-blue mt-1">
+                            <li className="group flex items-start gap-4">
+                                <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-primary-blue group-hover:border-primary-blue/50 transition-colors shrink-0">
                                     <Mail size={18} />
                                 </div>
                                 <div>
-                                    <p className="text-xs text-text-grey uppercase font-black tracking-tighter mb-1">Email</p>
+                                    <p className="text-[10px] text-text-grey uppercase font-black tracking-widest mb-1">Email</p>
                                     <p className="text-white font-bold text-sm">hello@gentechguard.com</p>
                                 </div>
                             </li>
-                            <li className="flex items-start gap-4">
-                                <div className="text-primary-blue mt-1">
+                            <li className="group flex items-start gap-4">
+                                <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-primary-blue group-hover:border-primary-blue/50 transition-colors shrink-0">
                                     <MapPin size={18} />
                                 </div>
                                 <div>
-                                    <p className="text-xs text-text-grey uppercase font-black tracking-tighter mb-1">Main Studio</p>
+                                    <p className="text-[10px] text-text-grey uppercase font-black tracking-widest mb-1">Headquarters</p>
                                     <p className="text-white font-bold text-sm">New Delhi, India</p>
                                 </div>
                             </li>
@@ -96,14 +168,23 @@ export default function Footer() {
                     </div>
                 </div>
 
-                <div className="pt-10 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
-                    <p className="text-text-grey text-xs font-bold uppercase tracking-widest">
-                        © 2025 <span className="text-white">Gentech Guard®</span>. All Rights Reserved.
+                {/* Bottom Bar */}
+                <div className="pt-8 flex flex-col md:flex-row justify-between items-center gap-6">
+                    <p className="text-text-grey/60 text-xs font-bold uppercase tracking-widest flex items-center gap-2">
+                        <Zap size={12} className="text-primary-blue" />
+                        © 2025 <span className="text-white/80">Gentech Guard®</span>. All Rights Reserved.
                     </p>
                     <div className="flex gap-8">
-                        <Link href="/privacy" className="text-text-grey hover:text-white text-xs font-bold uppercase tracking-widest">Privacy Policy</Link>
-                        <Link href="/terms" className="text-text-grey hover:text-white text-xs font-bold uppercase tracking-widest">Terms of Service</Link>
+                        <span className="text-text-grey/40 text-xs font-bold uppercase tracking-widest cursor-default">Privacy Policy</span>
+                        <span className="text-text-grey/40 text-xs font-bold uppercase tracking-widest cursor-default">Terms of Service</span>
                     </div>
+                </div>
+            </div>
+
+            {/* Giant Background Text */}
+            <div className="absolute bottom-0 left-0 right-0 overflow-hidden pointer-events-none select-none">
+                <div className="text-[20vw] font-black text-white/[0.015] uppercase tracking-tighter leading-none whitespace-nowrap translate-y-1/3">
+                    GENTECH GUARD
                 </div>
             </div>
         </footer>

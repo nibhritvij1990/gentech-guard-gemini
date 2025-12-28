@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight, Shield, Zap, Droplets } from "lucide-react";
 import { useRef } from "react";
@@ -24,7 +25,7 @@ export default function Hero() {
             {/* BACKGROUND IMAGE WITH PARALLAX */}
             <motion.div
                 style={{ y: y1 }}
-                className="absolute inset-0 z-0 opacity-40 md:opacity-60"
+                className="absolute inset-0 z-0 opacity-80 md:opacity-100"
             >
                 <Image
                     src="/assets/Hero Image Side On.png"
@@ -38,40 +39,52 @@ export default function Hero() {
             </motion.div>
 
             {/* CONTENT */}
-            <div className="container mx-auto px-4 md:px-8 relative z-10 w-full">
+            <div className="container mx-auto px-4 md:px-8 relative z-10 w-full md:translate-y-[-10%]">
                 <div className="max-w-4xl">
                     <motion.div
                         initial={{ opacity: 0, x: -50 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.8, ease: "easeOut" }}
                     >
-                        <span className="inline-block bg-primary-blue/10 border border-primary-blue/30 text-primary-blue px-4 py-1 rounded-full text-xs font-black tracking-widest uppercase mb-6 neon-glow">
-                            Next-Gen Protection
-                        </span>
+                        <div className="w-24 h-24 md:w-32 md:h-32 mb-8 relative">
+                            <Image
+                                src="/assets/gentech-tall.png"
+                                alt="Gentech Guard Tall Logo"
+                                fill
+                                className="object-contain"
+                                priority
+                            />
+                        </div>
                         <h1 className="text-4xl md:text-5xl lg:text-6xl font-black leading-tight mb-6">
                             NEXT-GENERATION <br />
-                            <span className="blue-text italic tracking-wider">AUTOMOTIVE PROTECTION</span>
+                            <span className="blue-text tracking-wider">AUTOMOTIVE PROTECTION</span>
                         </h1>
-                        <p className="text-base md:text-lg text-text-grey max-w-xl mb-8 font-medium leading-relaxed">
+                        <p className="hidden text-base md:text-lg text-text-grey max-w-xl mb-8 font-medium leading-relaxed">
                             Step into the future of car care. Our international-grade Aliphatic TPU
                             Film provides invisible, self-healing armor for your vehicle.
                         </p>
 
                         <div className="flex flex-col sm:flex-row gap-4 mb-12">
-                            <button className="bg-primary-blue hover:bg-white hover:text-dark-bg text-white px-8 py-3 rounded-full font-black text-base transition-all neon-glow flex items-center justify-center gap-2 group">
-                                GET A QUOTE
+                            <Link
+                                href="/#contact"
+                                className="bg-primary-blue hover:bg-white hover:text-dark-bg text-white px-8 py-3 rounded-full font-black text-base transition-all neon-glow flex items-center justify-center gap-2 group"
+                            >
+                                BECOME A DEALER
                                 <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-                            </button>
-                            <button className="border border-white/20 hover:border-primary-blue text-white px-8 py-3 rounded-full font-black text-base transition-all backdrop-blur-sm">
+                            </Link>
+                            <Link
+                                href="/#solutions"
+                                className="border border-white/20 hover:border-primary-blue text-white px-8 py-3 rounded-full font-black text-base transition-all backdrop-blur-sm flex items-center justify-center"
+                            >
                                 EXPLORE TECH
-                            </button>
+                            </Link>
                         </div>
                     </motion.div>
 
                     {/* MICRO FEATURES */}
                     <motion.div
                         style={{ y: y2, opacity }}
-                        className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-12 border-t border-white/10"
+                        className="hidden grid grid-cols-1 sm:grid-cols-3 gap-6 pt-12 border-t border-white/10"
                     >
                         <div className="flex items-center gap-4">
                             <div className="w-12 h-12 rounded-xl bg-elevated-bg border border-white/10 flex items-center justify-center text-primary-blue">
