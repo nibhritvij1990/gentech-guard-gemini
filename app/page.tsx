@@ -16,7 +16,7 @@ export default function Home() {
       <ProcessSection />
       <SolutionsSection />
 
-      <DealerMap />
+      {/*DealerMap />*/}
       <ContactForm />
 
       <Footer />

@@ -1,268 +1,178 @@
 "use client";
 
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Send, CheckCircle, Mail, Phone, MessageSquare, Briefcase } from "lucide-react";
-
-type FormType = "inquiry" | "dealer";
+import { motion } from "framer-motion";
+import { Mail, Phone, MessageCircle, ArrowRight, CheckCircle2, Star } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 
 export default function ContactForm() {
-    const [formType, setFormType] = useState<FormType>("inquiry");
-    const [status, setStatus] = useState<"idle" | "loading" | "success">("idle");
-    const [formData, setFormData] = useState({
-        name: "",
-        email: "",
-        phone: "",
-        city: "",
-        message: "",
-        businessName: "", // for dealer
-        currentExperience: "", // for dealer
-    });
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setStatus("loading");
-
-        // Mock Notification Logic (Zero-Cost Architecture)
-        console.group("🚀 LEAD CAPTURED: Gentech Guard®");
-        console.log("Type:", formType.toUpperCase());
-        console.log("Data:", formData);
-        console.log("📡 ACTION: Sending Instant Telegram Notification...");
-        console.log("📝 ACTION: Logging to Google Sheets for ROI tracking...");
-        console.groupEnd();
-
-        // Simulate API delay
-        await new Promise((resolve) => setTimeout(resolve, 2000));
-
-        setStatus("success");
-        // Reset form after success
-        setTimeout(() => {
-            setStatus("idle");
-            setFormData({
-                name: "",
-                email: "",
-                phone: "",
-                city: "",
-                message: "",
-                businessName: "",
-                currentExperience: "",
-            });
-        }, 5000);
-    };
-
-    const updateField = (field: string, value: string) => {
-        setFormData((prev) => ({ ...prev, [field]: value }));
-    };
+    const whatsappNumber = "919989820222"; // Replace with actual number
+    const dealerMessage = "Hi, I am interested in becoming an authorized Gentech Guard Dealer. Please share more details.";
 
     return (
-        <section id="contact" className="py-24 bg-dark-bg/50 border-t border-white/5 relative">
-            <div className="container mx-auto px-4 md:px-8">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+        <section id="contact" className="relative py-32 overflow-hidden bg-dark-bg">
+            {/* Background Image */}
+            <div className="absolute inset-0 z-0">
+                <Image
+                    src="/assets/contact_bg.png"
+                    alt="Contact Background"
+                    fill
+                    className="object-cover opacity-40 blur-[2px]"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-dark-bg via-dark-bg/80 to-primary-blue/10 mix-blend-multiply" />
+                <div className="absolute inset-0 bg-gradient-to-b from-dark-bg via-transparent to-dark-bg" />
+            </div>
 
-                    {/* Left Side: Copy */}
-                    <div>
-                        <motion.span
-                            initial={{ opacity: 0, x: -20 }}
-                            whileInView={{ opacity: 1, x: 0 }}
-                            className="text-primary-blue font-black tracking-[0.2em] uppercase text-sm mb-4 inline-block"
-                        >
-                            Get in Touch
-                        </motion.span>
-                        <motion.h2
-                            initial={{ opacity: 0, x: -20 }}
-                            whileInView={{ opacity: 1, x: 0 }}
-                            transition={{ delay: 0.1 }}
-                            className="text-3xl md:text-6xl font-black text-white mb-8"
-                        >
-                            LET&apos;S PROTECT <br />
-                            <span className="blue-text italic text-4xl md:text-7xl">YOUR PASSION</span>
-                        </motion.h2>
-
-                        <div className="space-y-8 mt-12">
-                            <ContactInfoItem
-                                icon={Mail}
-                                title="Email Us"
-                                detail="info@gentechguard.com"
-                                sub="Support available 24/7"
-                            />
-                            <ContactInfoItem
-                                icon={Phone}
-                                title="Call Experts"
-                                detail="+91 1800-XXX-XXXX"
-                                sub="Mon-Sat (10:00 - 19:00)"
-                            />
-                            <ContactInfoItem
-                                icon={Briefcase}
-                                title="Office"
-                                detail="New Delhi, India"
-                                sub="Regional Logistics Hub"
+            <div className="container mx-auto px-4 md:px-8 relative z-10">
+                {/* Header */}
+                <div className="text-center mb-16">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                    >
+                        <div className="w-24 h-24 mx-auto mb-6 relative">
+                            <Image
+                                src="/assets/gentech-tall.png"
+                                alt="Gentech Guard"
+                                fill
+                                className="object-contain opacity-80"
                             />
                         </div>
-                    </div>
-
-                    {/* Right Side: Form */}
-                    <div className="glass p-8 md:p-12 rounded-[2.5rem] border border-white/5 relative overflow-hidden shadow-2xl">
-                        <AnimatePresence mode="wait">
-                            {status === "success" ? (
-                                <motion.div
-                                    initial={{ opacity: 0, scale: 0.9 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    exit={{ opacity: 0, scale: 0.9 }}
-                                    className="text-center py-12"
-                                >
-                                    <div className="w-24 h-24 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-8 border border-green-500/30">
-                                        <CheckCircle className="text-green-400" size={48} />
-                                    </div>
-                                    <h3 className="text-3xl font-black text-white mb-4 uppercase tracking-tighter">MESSAGE SENT!</h3>
-                                    <p className="text-text-grey max-w-sm mx-auto font-medium">
-                                        Thank you for reaching out. A Gentech Expert will contact you shortly via phone or email.
-                                    </p>
-                                </motion.div>
-                            ) : (
-                                <motion.div
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    exit={{ opacity: 0 }}
-                                >
-                                    {/* Form Type Switcher */}
-                                    <div className="flex p-1 bg-white/5 rounded-xl border border-white/10 mb-8 max-w-[300px]">
-                                        <button
-                                            onClick={() => setFormType("inquiry")}
-                                            className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg font-black text-[10px] uppercase tracking-widest transition-all ${formType === "inquiry" ? "bg-primary-blue text-white shadow-lg neon-glow" : "text-text-grey hover:text-white"
-                                                }`}
-                                        >
-                                            <MessageSquare size={14} />
-                                            Inquiry
-                                        </button>
-                                        <button
-                                            onClick={() => setFormType("dealer")}
-                                            className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg font-black text-[10px] uppercase tracking-widest transition-all ${formType === "dealer" ? "bg-primary-blue text-white shadow-lg neon-glow" : "text-text-grey hover:text-white"
-                                                }`}
-                                        >
-                                            <Briefcase size={14} />
-                                            Dealer
-                                        </button>
-                                    </div>
-
-                                    <form onSubmit={handleSubmit} className="space-y-6">
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                            <FormInput
-                                                label="Full Name"
-                                                placeholder="John Doe"
-                                                value={formData.name}
-                                                onChange={(v: string) => updateField("name", v)}
-                                            />
-                                            <FormInput
-                                                label="Phone Number"
-                                                placeholder="+91 999 000 0000"
-                                                type="tel"
-                                                value={formData.phone}
-                                                onChange={(v: string) => updateField("phone", v)}
-                                            />
-                                        </div>
-
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                            <FormInput
-                                                label="Email Address"
-                                                placeholder="name@email.com"
-                                                type="email"
-                                                value={formData.email}
-                                                onChange={(v: string) => updateField("email", v)}
-                                            />
-                                            <FormInput
-                                                label="City / Region"
-                                                placeholder="e.g. New Delhi"
-                                                value={formData.city}
-                                                onChange={(v: string) => updateField("city", v)}
-                                            />
-                                        </div>
-
-                                        {formType === "dealer" && (
-                                            <motion.div
-                                                initial={{ height: 0, opacity: 0 }}
-                                                animate={{ height: "auto", opacity: 1 }}
-                                                className="space-y-6 overflow-hidden"
-                                            >
-                                                <FormInput
-                                                    label="Business Name"
-                                                    placeholder="Your Studio/Store Name"
-                                                    value={formData.businessName}
-                                                    onChange={(v: string) => updateField("businessName", v)}
-                                                />
-                                                <FormInput
-                                                    label="Current Experience"
-                                                    placeholder="Years in Detailing/Automotive"
-                                                    value={formData.currentExperience}
-                                                    onChange={(v: string) => updateField("currentExperience", v)}
-                                                />
-                                            </motion.div>
-                                        )}
-
-                                        <div className="flex flex-col gap-2">
-                                            <label className="text-[10px] font-black uppercase tracking-[0.2em] text-text-grey">
-                                                {formType === "dealer" ? "Brief Profile" : "How can we help?"}
-                                            </label>
-                                            <textarea
-                                                required
-                                                value={formData.message}
-                                                onChange={(e) => updateField("message", e.target.value)}
-                                                placeholder="..."
-                                                className="bg-white/5 border border-white/10 rounded-xl py-4 px-5 text-white outline-none focus:border-primary-blue focus:bg-white/10 transition-all font-medium placeholder:text-text-grey/30 text-sm h-32 resize-none"
-                                            />
-                                        </div>
-
-                                        <button
-                                            type="submit"
-                                            disabled={status === "loading"}
-                                            className="w-full bg-primary-blue hover:bg-white hover:text-dark-bg text-white py-5 rounded-2xl font-black text-sm uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3 neon-glow disabled:opacity-50"
-                                        >
-                                            {status === "loading" ? "SENDING..." : "DISPATCH MESSAGE"}
-                                            <Send size={18} />
-                                        </button>
-
-                                        <p className="text-[9px] text-text-grey/40 text-center uppercase tracking-widest italic">
-                                            Privacy Protected • Zero Spam Policy • 256-bit Secure
-                                        </p>
-                                    </form>
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
-                    </div>
+                        <h2 className="text-4xl md:text-6xl font-black text-white uppercase tracking-tighter mb-4 shadow-xl drop-shadow-2xl">
+                            CONTACT <span className="text-primary-blue">US</span>
+                        </h2>
+                        <p className="text-blue-200/80 text-lg font-bold tracking-widest uppercase">
+                            24/7 Support & Assistance
+                        </p>
+                    </motion.div>
                 </div>
+
+                {/* Contact Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto mb-24">
+                    <ContactCard
+                        icon={Phone}
+                        title="Call Us"
+                        value="+91 99898 20222"
+                        action="View PPF Solutions"
+                        href="#solutions"
+                        delay={0.1}
+                    />
+                    <ContactCard
+                        icon={Mail}
+                        title="Email Us"
+                        value="info@gentechguard.com"
+                        action="View Sunfilm Solutions"
+                        href="#solutions"
+                        delay={0.2}
+                    />
+                    <ContactCard
+                        icon={MessageCircle}
+                        title="WhatsApp"
+                        value="+91 99898 20222"
+                        action="Chat Now"
+                        href={`https://wa.me/${whatsappNumber}`}
+                        delay={0.3}
+                        isWhatsApp
+                    />
+                </div>
+
+                {/* Become A Dealer Section */}
+                <motion.div
+                    initial={{ opacity: 0, y: 40 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    className="max-w-5xl mx-auto"
+                >
+                    <div className="relative rounded-[3rem] overflow-hidden border border-white/10 bg-gradient-to-br from-primary-blue/20 to-dark-bg/50 backdrop-blur-xl group hover:border-primary-blue/30 transition-all duration-500">
+                        {/* Dealer Background Effect */}
+                        <div className="absolute inset-0 bg-[url('/assets/solutions_bg.png')] opacity-10 bg-cover bg-center mix-blend-overlay" />
+
+                        <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-12 p-8 md:p-16 items-center">
+                            <div>
+                                <h3 className="text-4xl md:text-6xl font-black text-white uppercase leading-none mb-2">
+                                    Become A <br />
+                                    <span className="text-primary-blue text-transparent bg-clip-text bg-gradient-to-r from-primary-blue to-cyan-300">
+                                        Dealer
+                                    </span>
+                                </h3>
+                                <p className="text-white/70 text-lg font-medium mb-8 max-w-md">
+                                    Join the fastest growing network of premium automotive protection studios in India.
+                                </p>
+
+                                <div className="space-y-4 mb-10">
+                                    <DealerBenefit text="High-Margin Revenue Opportunities" />
+                                    <DealerBenefit text="Exclusive Marketing & Support Resources" />
+                                    <DealerBenefit text="Priority Access to Premium Products" />
+                                </div>
+
+                                <a
+                                    href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(dealerMessage)}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center gap-3 bg-gradient-to-r from-primary-blue to-blue-600 text-white px-10 py-5 rounded-2xl font-black uppercase tracking-widest hover:scale-105 hover:shadow-[0_0_30px_rgba(0,170,255,0.4)] transition-all duration-300 group-hover:animate-pulse-slow"
+                                >
+                                    Apply For Dealership
+                                    <ArrowRight className="w-5 h-5" />
+                                </a>
+                            </div>
+
+                            {/* Visual/Image Side */}
+                            <div className="relative h-full min-h-[300px] flex items-center justify-center">
+                                <div className="absolute inset-0 bg-primary-blue/20 blur-[100px] rounded-full" />
+                                <Image
+                                    src="/assets/gentech-tall.png"
+                                    alt="Gentech Badge"
+                                    width={300}
+                                    height={300}
+                                    className="relative z-10 drop-shadow-[0_0_50px_rgba(0,170,255,0.3)] animate-float"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </motion.div>
             </div>
         </section>
     );
 }
 
-function ContactInfoItem({ icon: Icon, title, detail, sub }: any) {
+function ContactCard({ icon: Icon, title, value, action, href, delay, isWhatsApp }: any) {
     return (
-        <div className="flex gap-6 group">
-            <div className="w-14 h-14 shrink-0 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-primary-blue group-hover:text-white transition-all text-primary-blue shadow-lg group-hover:neon-glow">
-                <Icon size={24} />
+        <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay }}
+            className="group relative"
+        >
+            <div className="absolute inset-0 bg-gradient-to-b from-primary-blue/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl blur-xl" />
+            <div className="relative h-full bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl p-8 hover:border-primary-blue/50 transition-all duration-300 flex flex-col items-center text-center group-hover:-translate-y-2 [container-type:inline-size]">
+                <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-6 transition-colors ${isWhatsApp ? 'bg-green-500/20 text-green-400 group-hover:bg-green-500 group-hover:text-white' : 'bg-primary-blue/10 text-primary-blue group-hover:bg-primary-blue group-hover:text-white'}`}>
+                    <Icon size={32} />
+                </div>
+
+                <h4 className="text-white font-black text-[clamp(0.9rem,1.5rem,6cqi)] mb-2">{value}</h4>
+                <p className="text-text-grey text-xs font-bold uppercase tracking-widest mb-8">{title}</p>
+
+                <Link
+                    href={href}
+                    className="mt-auto flex items-center gap-2 text-xs font-black uppercase tracking-[0.2em] text-white/50 group-hover:text-white transition-colors"
+                >
+                    {action}
+                    <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                </Link>
             </div>
-            <div>
-                <h4 className="text-[10px] font-black uppercase tracking-widest text-text-grey mb-1">{title}</h4>
-                <p className="text-xl font-bold text-white mb-1">{detail}</p>
-                <p className="text-xs text-text-grey font-medium">{sub}</p>
-            </div>
-        </div>
+        </motion.div>
     );
 }
 
-function FormInput({ label, placeholder, type = "text", value, onChange }: any) {
+function DealerBenefit({ text }: { text: string }) {
     return (
-        <div className="flex flex-col gap-2">
-            <label className="text-[10px] font-black uppercase tracking-[0.2em] text-text-grey">
-                {label} <span className="text-primary-blue">*</span>
-            </label>
-            <input
-                type={type}
-                required
-                value={value}
-                onChange={(e) => onChange(e.target.value)}
-                placeholder={placeholder}
-                className="bg-white/5 border border-white/10 rounded-xl py-4 px-5 text-white outline-none focus:border-primary-blue focus:bg-white/10 transition-all font-medium placeholder:text-text-grey/30 text-sm"
-            />
+        <div className="flex items-center gap-4">
+            <div className="w-6 h-6 rounded-full bg-primary-blue/20 flex items-center justify-center shrink-0">
+                <CheckCircle2 size={14} className="text-primary-blue" />
+            </div>
+            <span className="text-white/90 font-bold text-sm md:text-base">{text}</span>
         </div>
     );
 }

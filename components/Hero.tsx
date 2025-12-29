@@ -56,8 +56,8 @@ export default function Hero() {
                             />
                         </div>
                         <h1 className="text-4xl md:text-5xl lg:text-6xl font-black leading-tight mb-6">
-                            NEXT-GENERATION <br />
-                            <span className="blue-text tracking-wider">AUTOMOTIVE PROTECTION</span>
+                            GENTECH GUARD <br />
+                            <span className="blue-text tracking-wider">ADVANCED <br /> PROTECTION FILMS</span>
                         </h1>
                         <p className="hidden text-base md:text-lg text-text-grey max-w-xl mb-8 font-medium leading-relaxed">
                             Step into the future of car care. Our international-grade Aliphatic TPU

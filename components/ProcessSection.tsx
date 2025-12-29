@@ -18,7 +18,7 @@ const steps = [
         id: "02",
         title: "Digital Precision",
         subtitle: "Plotter Cutting & Alignment",
-        details: ["Computerized pattern cutting", "Precise panel alignment", "Edge matching and curves"],
+        details: ["Tailor made pattern cutting", "OEM level fit", "Precise panel alignment", "Edge matching and curves"],
         image: "/assets/steps/cutting.png",
         icon: Scissors
     },

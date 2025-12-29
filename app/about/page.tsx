@@ -31,7 +31,7 @@ const HeroSection = () => {
                     priority
                     className="object-cover object-center"
                 />
-                <div className="absolute inset-0 bg-gradient-to-b from-dark-bg/80 via-dark-bg/40 to-dark-bg" />
+                <div className="absolute inset-0 bg-gradient-to-b from-dark-bg/10 via-dark-bg/10 to-dark-bg" />
                 <div className="absolute inset-0 bg-primary-blue/10 mix-blend-overlay" />
             </motion.div>
 
@@ -285,16 +285,21 @@ const QualitySection = () => {
     const ref = useRef(null);
     const { scrollYProgress } = useScroll({
         target: ref,
-        offset: ["start start", "end start"],
+        offset: ["start end", "end start"],
     });
 
-    const y = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
-    const opacity = useTransform(scrollYProgress, [0, 0.5, 1], [1, 1, 0.3]);
+    // Parallax effect that works both ways (scroll in and scroll out)
+    const y = useTransform(scrollYProgress, [0, 0.5, 1], ["15%", "0%", "30%"]);
+    const scale = useTransform(scrollYProgress, [0, 0.5, 1], [1.1, 1, 1]);
+    const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0.3, 1, 1, 0.3]);
 
     return (
         <section ref={ref} className="relative h-screen w-full overflow-hidden flex items-center justify-center">
-            {/* Background Image with Parallax */}
-            <motion.div style={{ y }} className="absolute inset-0 z-0">
+            {/* Top Gradient Fade - Soften transition from previous section */}
+            <div className="absolute top-0 left-0 right-0 h-40 bg-gradient-to-b from-dark-bg via-dark-bg/80 to-transparent z-10" />
+
+            {/* Background Image with Bidirectional Parallax */}
+            <motion.div style={{ y, scale }} className="absolute inset-0 z-0">
                 <Image
                     src="/assets/Hero Image Front On 02.png"
                     alt="Gentech Guard Quality"
@@ -302,8 +307,8 @@ const QualitySection = () => {
                     className="object-cover object-center"
                 />
                 {/* Dark Overlay */}
-                <div className="absolute inset-0 bg-dark-bg/70" />
-                <div className="absolute inset-0 bg-gradient-to-t from-dark-bg via-dark-bg/50 to-transparent" />
+                <div className="absolute inset-0" />
+                <div className="absolute inset-0 bg-gradient-to-t from-dark-bg via-dark-bg/20 to-transparent" />
                 {/* Blue Accent Overlay */}
                 <div className="absolute inset-0 bg-primary-blue/5 mix-blend-overlay" />
             </motion.div>
@@ -344,7 +349,7 @@ const QualitySection = () => {
             </motion.div>
 
             {/* Bottom Gradient Fade */}
-            <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-dark-bg to-transparent z-10" />
+            <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-dark-bg via-dark-bg/80 to-transparent z-10" />
         </section>
     );
 }

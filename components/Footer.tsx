@@ -27,15 +27,15 @@ export default function Footer() {
             <div className="h-[1px] w-full bg-gradient-to-r from-transparent via-primary-blue/50 to-transparent" />
 
             {/* Decorative Background */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-primary-blue/5 rounded-full blur-[150px] pointer-events-none" />
+            <div className="hidden absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-primary-blue/5 rounded-full blur-[150px] pointer-events-none" />
 
             {/* CTA Section */}
-            <div className="container mx-auto px-4 md:px-8 pt-24 pb-16 relative z-10">
+            <div className="container mx-auto px-4 md:px-8 pt-8 pb-8 relative z-10">
                 <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    className="text-center mb-20"
+                    className="hidden text-center mb-20"
                 >
                     <h2 className="text-4xl md:text-6xl font-black text-white uppercase tracking-tighter mb-6">
                         Ready to <span className="text-primary-blue">Protect</span>?
@@ -143,7 +143,7 @@ export default function Footer() {
                                 </div>
                                 <div>
                                     <p className="text-[10px] text-text-grey uppercase font-black tracking-widest mb-1">Call Us</p>
-                                    <p className="text-white font-bold text-sm">+91 911 222 3333</p>
+                                    <p className="text-white font-bold text-sm">+91 99898 20222</p>
                                 </div>
                             </li>
                             <li className="group flex items-start gap-4">
@@ -152,7 +152,7 @@ export default function Footer() {
                                 </div>
                                 <div>
                                     <p className="text-[10px] text-text-grey uppercase font-black tracking-widest mb-1">Email</p>
-                                    <p className="text-white font-bold text-sm">hello@gentechguard.com</p>
+                                    <p className="text-white font-bold text-sm">info@gentechguard.com</p>
                                 </div>
                             </li>
                             <li className="group flex items-start gap-4">
@@ -161,7 +161,7 @@ export default function Footer() {
                                 </div>
                                 <div>
                                     <p className="text-[10px] text-text-grey uppercase font-black tracking-widest mb-1">Headquarters</p>
-                                    <p className="text-white font-bold text-sm">New Delhi, India</p>
+                                    <p className="text-white font-bold text-sm">Hyderabad, Telangana</p>
                                 </div>
                             </li>
                         </ul>

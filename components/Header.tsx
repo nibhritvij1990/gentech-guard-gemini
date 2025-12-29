@@ -8,6 +8,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 
 const navLinks = [
+    { name: "Home", href: "/" },
     { name: "About Us", href: "/about" },
     { name: "Solutions", href: "/#solutions" },
     { name: "Process", href: "/#process" },
@@ -34,7 +35,7 @@ export default function Header() {
             className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${scrolled ? "glass py-3" : "bg-transparent py-5"
                 }`}
             style={{
-                background: "linear-gradient(to right, #000, #111111b3 50%)",
+                background: `${scrolled ? "linear-gradient(to right, #000, #111111b3 50%)" : "transparent"}`,
             }}
         >
             <div className="container mx-auto px-4 md:px-8 flex items-center justify-between">
@@ -42,8 +43,8 @@ export default function Header() {
                     <motion.div
                         initial={{ opacity: 0, x: -10 }}
                         animate={{
-                            opacity: isAboutPage || scrolled ? 1 : 0,
-                            x: isAboutPage || scrolled ? 0 : -10
+                            opacity: isAboutPage || scrolled || !scrolled ? 1 : 0,
+                            x: isAboutPage || scrolled || !scrolled ? 0 : -10
                         }}
                         transition={{ duration: 0.5, ease: "easeOut" }}
                         className="w-40 md:w-48 h-10 md:h-12 relative"
@@ -86,6 +87,20 @@ export default function Header() {
                 </button>
             </div>
 
+            {/* MOBILE MENU BACKDROP */}
+            <AnimatePresence>
+                {isOpen && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="lg:hidden fixed inset-0 top-[72px] bg-black/80 backdrop-blur-md z-40"
+                        onClick={() => setIsOpen(false)}
+                    />
+                )}
+            </AnimatePresence>
+
             {/* MOBILE MENU */}
             <AnimatePresence>
                 {isOpen && (
@@ -93,14 +108,14 @@ export default function Header() {
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: "auto" }}
                         exit={{ opacity: 0, height: 0 }}
-                        className="lg:hidden bg-dark-bg border-b border-white/10 overflow-hidden"
+                        className="lg:hidden bg-dark-bg border-b border-white/10 overflow-hidden relative z-50 mt-5"
                     >
                         <div className="flex flex-col p-6 gap-6">
                             {navLinks.map((link) => (
                                 <Link
                                     key={link.name}
                                     href={link.href}
-                                    className="text-lg font-bold uppercase tracking-widest text-text-grey hover:text-primary-blue flex items-center justify-between group"
+                                    className="text-lg font-bold uppercase text-center tracking-widest text-text-grey hover:text-primary-blue flex items-center justify-center group"
                                     onClick={() => setIsOpen(false)}
                                 >
                                     {link.name}

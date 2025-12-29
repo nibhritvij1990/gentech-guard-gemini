@@ -17,12 +17,14 @@ export default function WarrantyForm() {
         name: "",
         phone: "",
         email: "",
-        city: "",
-        vehicleModel: "",
         regNumber: "",
+        chassisNumber: "",
+        ppfRoll: "",
+        ppfCategory: "",
         dealerName: "",
-        installDate: "",
-        serialNumber: "",
+        installerMobile: "",
+        installationLocation: "",
+        message: "",
     });
 
     const handleNext = () => setStep((s) => Math.min(s + 1, 3));
@@ -44,6 +46,9 @@ export default function WarrantyForm() {
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 className="glass p-12 rounded-[2.5rem] border border-white/5 text-center"
+                style={{
+                    background: "#fafafa11",
+                }}
             >
                 <div className="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-8 border border-green-500/30">
                     <CheckCircle className="text-green-400" size={40} />
@@ -63,7 +68,11 @@ export default function WarrantyForm() {
     }
 
     return (
-        <div className="glass p-8 md:p-12 rounded-[2.5rem] border border-white/5 relative overflow-hidden">
+        <div className="glass p-8 md:p-12 rounded-[2.5rem] border border-white/5 relative overflow-hidden"
+            style={{
+                background: "#fafafa11",
+            }}
+        >
             {/* Step Progress */}
             <div className="flex justify-between mb-12 relative max-w-sm mx-auto">
                 <div className="absolute top-1/2 left-0 w-full h-0.5 bg-white/5 -translate-y-1/2 z-0" />
@@ -111,12 +120,6 @@ export default function WarrantyForm() {
                                     value={formData.email}
                                     onChange={(val: string) => updateField("email", val)}
                                 />
-                                <InputField
-                                    label="City"
-                                    placeholder="e.g. New Delhi"
-                                    value={formData.city}
-                                    onChange={(val: string) => updateField("city", val)}
-                                />
                             </motion.div>
                         )}
 
@@ -129,16 +132,28 @@ export default function WarrantyForm() {
                                 className="grid grid-cols-1 md:grid-cols-2 gap-6"
                             >
                                 <InputField
-                                    label="Vehicle Model"
-                                    placeholder="e.g. Mahindra XUV700"
-                                    value={formData.vehicleModel}
-                                    onChange={(val: string) => updateField("vehicleModel", val)}
-                                />
-                                <InputField
-                                    label="Registration Number"
+                                    label="Vehicle Registration Number"
                                     placeholder="DD-00-XX-0000"
                                     value={formData.regNumber}
                                     onChange={(val: string) => updateField("regNumber", val)}
+                                />
+                                <InputField
+                                    label="Chassis / VIN Number"
+                                    placeholder="e.g. 1234567890"
+                                    value={formData.chassisNumber}
+                                    onChange={(val: string) => updateField("chassisNumber", val)}
+                                />
+                                <InputField
+                                    label="PPF Roll / Unique Product Code"
+                                    placeholder="e.g. 1234567890"
+                                    value={formData.ppfRoll}
+                                    onChange={(val: string) => updateField("ppfRoll", val)}
+                                />
+                                <InputField
+                                    label="PPF Category"
+                                    placeholder="e.g. 1234567890"
+                                    value={formData.ppfCategory}
+                                    onChange={(val: string) => updateField("ppfCategory", val)}
                                 />
                             </motion.div>
                         )}
@@ -152,26 +167,29 @@ export default function WarrantyForm() {
                                 className="grid grid-cols-1 md:grid-cols-2 gap-6"
                             >
                                 <InputField
-                                    label="Dealer Name"
+                                    label="Authorised Studio Name"
                                     placeholder="Store where installed"
                                     value={formData.dealerName}
                                     onChange={(val: string) => updateField("dealerName", val)}
                                 />
                                 <InputField
-                                    label="Installation Date"
-                                    type="date"
-                                    placeholder="Select date"
-                                    value={formData.installDate}
-                                    onChange={(val: string) => updateField("installDate", val)}
+                                    label="Installer Mobile Number"
+                                    placeholder="+91 99999 99999"
+                                    value={formData.installerMobile}
+                                    onChange={(val: string) => updateField("installerMobile", val)}
                                 />
-                                <div className="md:col-span-2">
-                                    <InputField
-                                        label="Serial Number (from Invoice)"
-                                        placeholder="e.g. GNT-XXXXXX"
-                                        value={formData.serialNumber}
-                                        onChange={(val: string) => updateField("serialNumber", val)}
-                                    />
-                                </div>
+                                <InputField
+                                    label="Installation Location"
+                                    placeholder="e.g. New Delhi"
+                                    value={formData.installationLocation}
+                                    onChange={(val: string) => updateField("installationLocation", val)}
+                                />
+                                <InputField
+                                    label="Message (Optional)"
+                                    placeholder="Any additional information"
+                                    value={formData.message}
+                                    onChange={(val: string) => updateField("message", val)}
+                                />
                             </motion.div>
                         )}
                     </AnimatePresence>
