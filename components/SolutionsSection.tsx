@@ -5,6 +5,7 @@ import { useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, X, ShieldCheck, Zap } from "lucide-react";
+import ProductShowcase from '../components/ProductShowcase';
 
 const ppfFeatures = [
     "Self-healing technology",
@@ -127,7 +128,7 @@ export default function SolutionsSection() {
             <section
                 id="solutions"
                 ref={ref}
-                className="relative min-h-screen flex items-center py-24 overflow-hidden bg-dark-bg"
+                className="relative flex items-center py-32 overflow-hidden bg-dark-bg"
             >
                 {/* BACKGROUND IMAGE WITH PARALLAX */}
                 <motion.div
@@ -141,12 +142,12 @@ export default function SolutionsSection() {
                         priority
                         className="object-cover object-center"
                     />
-                    <div className="absolute inset-0 bg-dark-bg/20" />
+                    <div className="absolute inset-0 bg-gradient-to-b from-dark-bg via-transparent to-transparent [box-shadow:0px_-500px_0_0_black]" />
                     <div className="absolute inset-0 bg-gradient-to-t from-dark-bg via-transparent to-transparent" />
                 </motion.div>
 
                 {/* CONTENT */}
-                <div className="container mx-auto px-4 md:px-8 relative z-10 w-full translate-y-[-10%]">
+                <div className="container mx-auto px-4 md:px-8 relative z-10 w-full translate-y-[-0%]">
                     {/* Header */}
                     <motion.div
                         initial={{ opacity: 0, y: 30 }}
@@ -269,7 +270,7 @@ export default function SolutionsSection() {
             </section>
 
             {/* PRODUCT SHOWCASE SUB-SECTION */}
-            <section id="product-showcase" className="relative h-[80vh] w-full bg-dark-bg overflow-hidden flex flex-col my-24 container mx-auto px-8">
+            <section id="product-showcase" className="hidden relative h-[80vh] w-full bg-dark-bg overflow-hidden flex flex-col my-24 container mx-auto px-8">
                 <h4 className="text-xl md:text-2xl font-black text-white uppercase tracking-tighter text-center">
                     OUR <span className="blue-text">PPF</span> SOLUTION RANGE
                 </h4>
@@ -277,8 +278,15 @@ export default function SolutionsSection() {
                     {products.map((product, index) => (
                         <div
                             key={product.id}
-                            className="group relative flex-1 hover:flex-[2] transition-[flex] duration-500 ease-out overflow-hidden cursor-pointer border border-white/5 bg-dark-bg"
+                            className="group relative flex-1 hover:flex-[2] transition-[flex] duration-500 ease-out overflow-hidden cursor-pointer border border-white/5 bg-dark-bg rounded-2xl"
                             onClick={() => setActiveProduct(product)}
+                            style={{
+                                backgroundImage: "url('/assets/solutions_bg.png')",
+                                backgroundAttachment: "scroll",
+                                backgroundPositionY: "center",
+                                backgroundSize: "90vw 100%",
+                                backgroundRepeat: "no-repeat",
+                            }}
                         >
                             {/* Individual Card Background Image */}
                             <div className="absolute inset-0 z-0">
@@ -287,7 +295,7 @@ export default function SolutionsSection() {
                                     src="/assets/solutions_bg.png"
                                     alt="Gentech Product Range"
                                     fill
-                                    className="object-cover transition-transform duration-700 md:group-hover:scale-105"
+                                    className="hidden object-cover transition-transform duration-700 md:group-hover:scale-105"
                                     style={{
                                         objectPosition: `${index * 24}% center`,
                                         scale: "1.2"
@@ -320,6 +328,14 @@ export default function SolutionsSection() {
                         </div>
                     ))}
                 </div>
+            </section>
+
+            <section id="product-showcase" className="relative w-full bg-dark-bg overflow-hidden flex flex-col my-24 container mx-auto">
+                <h4 className="text-xl md:text-2xl font-black text-white uppercase tracking-tighter text-center">
+                    OUR <span className="blue-text">PPF</span> SOLUTION RANGE
+                </h4>
+
+                <ProductShowcase products={products} />
             </section>
 
             {/* PRODUCT DETAIL MODAL */}

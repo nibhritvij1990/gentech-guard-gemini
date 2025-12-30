@@ -32,13 +32,13 @@ export default function Header() {
 
     return (
         <header
-            className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${scrolled ? "glass py-3" : "bg-transparent py-5"
+            className={`fixed top-0 left-0 w-full ${isOpen ? "px-0" : "px-8"} z-50 transition-all duration-300 ${scrolled ? "glass py-3" : "bg-transparent py-5"
                 }`}
             style={{
-                background: `${scrolled ? "linear-gradient(to right, #000, #111111b3 50%)" : "transparent"}`,
+                background: `${scrolled ? "linear-gradient(to right, #000, #111111b3 50%)" : "linear-gradient(to right, #000 25%, transparent 50%)"}`,
             }}
         >
-            <div className="container mx-auto px-4 md:px-8 flex items-center justify-between">
+            <div className={`container mx-auto ${isOpen ? "px-6" : "px-0"} flex items-center justify-between gap-8`}>
                 <Link href="/" className="relative z-50">
                     <motion.div
                         initial={{ opacity: 0, x: -10 }}
@@ -65,14 +65,14 @@ export default function Header() {
                         <Link
                             key={link.name}
                             href={link.href}
-                            className="text-sm font-bold uppercase tracking-widest text-text-grey hover:text-primary-blue transition-colors"
+                            className="text-sm font-bold uppercase tracking-widest text-text-grey hover:text-primary-blue transition-colors whitespace-nowrap"
                         >
                             {link.name}
                         </Link>
                     ))}
                     <Link
                         href="/#contact"
-                        className="bg-primary-blue hover:bg-white hover:text-dark-bg text-white px-6 py-2 rounded-full text-sm font-black transition-all neon-glow uppercase tracking-wider"
+                        className="bg-primary-blue hover:bg-white hover:text-dark-bg text-white px-6 py-2 rounded-full text-sm font-black transition-all neon-glow uppercase tracking-wider whitespace-nowrap"
                     >
                         Become a Dealer
                     </Link>
@@ -80,7 +80,7 @@ export default function Header() {
 
                 {/* MOBILE TOGGLE */}
                 <button
-                    className="lg:hidden text-white p-2"
+                    className={`lg:hidden text-white p-2 ${isOpen ? "z-42" : ""}`}
                     onClick={() => setIsOpen(!isOpen)}
                 >
                     {isOpen ? <X size={28} /> : <Menu size={28} />}
@@ -95,7 +95,7 @@ export default function Header() {
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.3 }}
-                        className="lg:hidden fixed inset-0 top-[72px] bg-black/80 backdrop-blur-md z-40"
+                        className="lg:hidden fixed inset-0 bg-black/80 backdrop-blur-md z-40"
                         onClick={() => setIsOpen(false)}
                     />
                 )}
@@ -108,23 +108,23 @@ export default function Header() {
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: "auto" }}
                         exit={{ opacity: 0, height: 0 }}
-                        className="lg:hidden bg-dark-bg border-b border-white/10 overflow-hidden relative z-50 mt-5"
+                        className="lg:hidden bg-dark-bg border-b border-white/10 overflow-hidden relative z-50 py-8"
                     >
                         <div className="flex flex-col p-6 gap-6">
                             {navLinks.map((link) => (
                                 <Link
                                     key={link.name}
                                     href={link.href}
-                                    className="text-lg font-bold uppercase text-center tracking-widest text-text-grey hover:text-primary-blue flex items-center justify-center group"
+                                    className="text-lg py-2 font-bold uppercase text-center tracking-widest text-text-grey hover:text-primary-blue flex items-center justify-center group"
                                     onClick={() => setIsOpen(false)}
                                 >
                                     {link.name}
-                                    <ChevronRight size={20} className="text-primary-blue group-hover:translate-x-1 transition-transform" />
+                                    <ChevronRight size={20} className="text-primary-blue group-hover:translate-x-1 transition-transform ml-2" />
                                 </Link>
                             ))}
                             <Link
                                 href="/#contact"
-                                className="bg-primary-blue text-white px-6 py-3 rounded-lg text-center font-black uppercase tracking-wider neon-glow"
+                                className="bg-primary-blue py-2 mt-2 text-white px-6 py-3 rounded-lg text-center font-black uppercase tracking-wider neon-glow"
                                 onClick={() => setIsOpen(false)}
                             >
                                 Become a Dealer

@@ -32,7 +32,7 @@ export default function Hero() {
                     alt="Gentech Guard Protected Car"
                     fill
                     priority
-                    className="object-cover object-right md:object-center"
+                    className="object-cover object-[75%] md:object-right md:object-center"
                 />
                 <div className="absolute inset-0 bg-gradient-to-r from-dark-bg via-dark-bg/80 to-transparent" />
                 <div className="absolute inset-0 bg-gradient-to-t from-dark-bg via-transparent to-transparent" />

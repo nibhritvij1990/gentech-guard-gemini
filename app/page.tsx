@@ -3,6 +3,7 @@ import Hero from "@/components/Hero";
 import WhySection from "@/components/WhySection";
 import SolutionsSection from "@/components/SolutionsSection";
 import ProcessSection from "@/components/ProcessSection";
+import WarrantySection from "@/components/WarrantySection";
 import DealerMap from "@/components/DealerMap";
 import ContactForm from "@/components/ContactForm";
 import Footer from "@/components/Footer";
@@ -15,6 +16,7 @@ export default function Home() {
       <WhySection />
       <ProcessSection />
       <SolutionsSection />
+      <WarrantySection />
 
       {/*DealerMap />*/}
       <ContactForm />

@@ -4,58 +4,52 @@ import { useState } from "react";
 import { Search, Loader2, AlertCircle, CheckCircle2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
-// Mock database for demonstration
-const MOCK_DB: Record<string, any> = {
-    "GNT-123456": {
-        name: "John Doe",
-        vehicle: "BMW M4 (Sky Blue)",
-        installationDate: "12 Oct 2024",
-        product: "Gentech Pro",
-        status: "Active",
-        expiry: "11 Oct 2031",
-    },
-    "GNT-987654": {
-        name: "Jane Smith",
-        vehicle: "Tesla Model 3 ",
-        installationDate: "05 Dec 2024",
-        product: "Gentech Matte",
-        status: "Active",
-        expiry: "04 Dec 2031",
-    },
-};
-
 export default function WarrantyChecker() {
-    const [serial, setSerial] = useState("");
+    const [query, setQuery] = useState("");
     const [loading, setLoading] = useState(false);
     const [result, setResult] = useState<any>(null);
     const [error, setError] = useState("");
 
     const handleSearch = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!serial) return;
+        if (!query) return;
 
         setLoading(true);
         setError("");
         setResult(null);
 
-        // Simulate API delay
-        await new Promise((resolve) => setTimeout(resolve, 1500));
+        try {
+            const res = await fetch(`/api/warranty/check?q=${encodeURIComponent(query)}`);
+            const data = await res.json();
 
-        const data = MOCK_DB[serial.toUpperCase()];
-        if (data) {
-            setResult(data);
-        } else {
-            setError("Warranty serial number not found. Please verify and try again.");
+            if (!res.ok) {
+                throw new Error(data.error || "Warranty not found.");
+            }
+
+            if (data && data.length > 0) {
+                // Assuming we show the first match if multiple (though ideally unique)
+                setResult(data[0]);
+            } else {
+                setError("Warranty details not found. Please verify your details and try again.");
+            }
+
+        } catch (err: any) {
+            setError(err.message || "An error occurred while checking warranty status.");
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
     };
 
     return (
-        <div className="glass p-8 md:p-12 rounded-[2.5rem] border border-white/5 relative overflow-hidden">
+        <div className="glass p-8 md:p-12 rounded-[2.5rem] border border-white/5 relative overflow-hidden"
+            style={{
+                background: "#fafafa11",
+            }}
+        >
             <div className="max-w-md mx-auto text-center mb-10">
                 <h2 className="text-2xl font-black mb-4">VERIFY YOUR WARRANTY</h2>
                 <p className="text-text-grey text-sm font-medium">
-                    Enter the unique serial number provided at the time of installation to view your digital certificate.
+                    Enter your Mobile Number, VIN, or Vehicle Registration Number to view your warranty status.
                 </p>
             </div>
 
@@ -63,9 +57,9 @@ export default function WarrantyChecker() {
                 <div className="relative group">
                     <input
                         type="text"
-                        value={serial}
-                        onChange={(e) => setSerial(e.target.value)}
-                        placeholder="e.g. GNT-123456"
+                        value={query}
+                        onChange={(e) => setQuery(e.target.value)}
+                        placeholder="Mobile / VIN / Reg. Number"
                         className="w-full bg-white/5 border border-white/10 rounded-2xl py-5 px-6 outline-none focus:border-primary-blue focus:bg-white/10 transition-all font-black tracking-widest uppercase placeholder:text-text-grey/30"
                     />
                     <button
@@ -78,7 +72,7 @@ export default function WarrantyChecker() {
                     </button>
                 </div>
                 <p className="text-[10px] text-text-grey/40 mt-3 text-center uppercase tracking-widest">
-                    Case sensitive serial number found on your physical invoice
+                    You can search by any of the above details
                 </p>
             </form>
 
@@ -105,7 +99,7 @@ export default function WarrantyChecker() {
                                 <div className="flex justify-between items-start mb-8">
                                     <div>
                                         <span className="bg-green-500/10 text-green-400 text-[10px] font-black px-3 py-1 rounded-full border border-green-500/20 uppercase tracking-widest mb-2 inline-block">
-                                            {result.status}
+                                            ACTIVE
                                         </span>
                                         <h3 className="text-2xl font-black text-white">{result.name}</h3>
                                     </div>
@@ -115,19 +109,21 @@ export default function WarrantyChecker() {
                                 <div className="grid grid-cols-2 gap-y-6 mb-10">
                                     <div>
                                         <p className="text-[10px] text-text-grey uppercase tracking-widest mb-1">Vehicle</p>
-                                        <p className="text-white font-bold">{result.vehicle}</p>
+                                        <p className="text-white font-bold">{result.reg_number}</p>
                                     </div>
                                     <div>
                                         <p className="text-[10px] text-text-grey uppercase tracking-widest mb-1">Product</p>
-                                        <p className="text-primary-blue font-black">{result.product}</p>
+                                        <p className="text-primary-blue font-black">{result.ppf_category}</p>
                                     </div>
                                     <div>
-                                        <p className="text-[10px] text-text-grey uppercase tracking-widest mb-1">Installed On</p>
-                                        <p className="text-white font-bold">{result.installationDate}</p>
+                                        <p className="text-[10px] text-text-grey uppercase tracking-widest mb-1">Roll Code</p>
+                                        <p className="text-white font-bold">{result.ppf_roll}</p>
                                     </div>
                                     <div>
-                                        <p className="text-[10px] text-text-grey uppercase tracking-widest mb-1">Valid Until</p>
-                                        <p className="text-white font-bold">{result.expiry}</p>
+                                        <p className="text-[10px] text-text-grey uppercase tracking-widest mb-1">Registered On</p>
+                                        <p className="text-white font-bold">
+                                            {result.created_at ? new Date(result.created_at).toLocaleDateString() : 'N/A'}
+                                        </p>
                                     </div>
                                 </div>
 

@@ -53,13 +53,13 @@ export default function WarrantyPage() {
                         </p>
                         <div className="flex flex-col sm:flex-row gap-4 mb-12 justify-center">
                             <Link
-                                href="/#warranty-portal"
+                                href="/warranty#warranty-portal"
                                 className="border border-white/20 hover:border-primary-blue text-white px-8 py-3 rounded-full font-black text-base transition-all backdrop-blur-sm flex items-center justify-center"
                             >
                                 Check Status
                             </Link>
                             <Link
-                                href="/#warranty-portal"
+                                href="/warranty#warranty-portal"
                                 className="bg-primary-blue hover:bg-white hover:text-dark-bg text-white px-8 py-3 rounded-full font-black text-base transition-all neon-glow flex items-center justify-center gap-2 group"
                             >
                                 Register

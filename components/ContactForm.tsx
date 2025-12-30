@@ -10,9 +10,9 @@ export default function ContactForm() {
     const dealerMessage = "Hi, I am interested in becoming an authorized Gentech Guard Dealer. Please share more details.";
 
     return (
-        <section id="contact" className="relative py-32 overflow-hidden bg-dark-bg">
+        <section id="contact" className="relative pb-32 overflow-hidden bg-dark-bg">
             {/* Background Image */}
-            <div className="absolute inset-0 z-0">
+            <div className="hidden absolute inset-0 z-0">
                 <Image
                     src="/assets/contact_bg.png"
                     alt="Contact Background"
@@ -31,7 +31,7 @@ export default function ContactForm() {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                     >
-                        <div className="w-24 h-24 mx-auto mb-6 relative">
+                        <div className="hidden w-24 h-24 mx-auto mb-6 relative">
                             <Image
                                 src="/assets/gentech-tall.png"
                                 alt="Gentech Guard"

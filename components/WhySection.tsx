@@ -174,11 +174,12 @@ export default function WhySection() {
                         <motion.div
                             animate={{ rotate: 360 }}
                             transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                            className="absolute inset-[-200%] bg-[conic-gradient(from_0deg,transparent_20%,var(--primary-blue)_50%,transparent_80%)] opacity-40 group-hover:opacity-100 transition-opacity"
+                            //className="absolute inset-[-200%] bg-[conic-gradient(from_0deg,transparent_20%,var(--primary-blue)_50%,transparent_80%)] opacity-40 group-hover:opacity-100 transition-opacity"
+                            className="absolute inset-[-200%] bg-[conic-gradient(from_0deg,transparent_20%,var(--primary-blue)_50%,transparent_80%)] opacity-80 group-hover:opacity-100 transition-opacity"
                         />
 
                         {/* 2. Inner Button Body */}
-                        <div className="relative z-10 flex items-center gap-6 px-10 py-4 bg-[#050505] rounded-full border border-white/5 group-hover:bg-primary-blue/5 transition-colors">
+                        <div className="relative z-10 flex items-center gap-6 px-10 py-4 bg-[#050505] rounded-full border border-white/5 group-hover:bg-primary-blue transition-colors">
                             <span className="text-white font-black uppercase tracking-[0.3em] text-[11px] md:text-sm">
                                 Discover Our Heritage
                             </span>
