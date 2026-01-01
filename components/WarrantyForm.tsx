@@ -1,14 +1,60 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState } from "react";
+import { User, Car, Wrench, ArrowRight, ArrowLeft, Upload, Loader2, AlertCircle, CheckCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { User, Car, Wrench, CheckCircle, ArrowRight, ArrowLeft, Upload, Loader2, AlertCircle } from "lucide-react";
 
 const steps = [
     { id: 1, title: "Owner Info", icon: User },
     { id: 2, title: "Vehicle Details", icon: Car },
     { id: 3, title: "Installation", icon: Wrench },
 ];
+
+const ppfCategories = [
+    "GEN 4 PPF",
+    "GEN 5 PPF",
+    "GEN MATTE 5",
+    "GEN PRO 6",
+    "GEN ULTRA PRO 8"
+];
+
+// Formatting helper for Indian Reg Numbers (Simple standardized styling)
+const formatRegNumber = (val: string) => {
+    // Remove non-alphanumeric chars and convert to upper
+    const clean = val.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+
+    // Attempt basic pattern matching: TS09AB1234 -> TS 09 AB 1234
+    // 2 chars (State), 2 chars (RTO), 1-3 chars (Series), 4 digits (Num)
+    // This regex is a 'best effort' formatter for standard plates.
+
+    // Regex breakdown:
+    // ^([A-Z]{2})       Group 1: State (2 letters)
+    // ([0-9]{1,2})      Group 2: RTO (1-2 digits)
+    // ([A-Z]{0,3})      Group 3: Series (0-3 letters optional)
+    // ([0-9]{1,4})$     Group 4: Num (1-4 digits)
+
+    const match = clean.match(/^([A-Z]{2})([0-9]{1,2})([A-Z]{0,3})([0-9]{1,4})$/);
+
+    if (match) {
+        // Pad RTO to 2 chars if needed? Usually standard is input as is.
+        // Let's just space them out.
+        const state = match[1];
+        const rto = match[2].padStart(2, '0'); // '4' -> '04'
+        const series = match[3];
+        const num = match[4].padStart(4, '0'); // '123' -> '0123'
+
+        return `${state} ${rto} ${series ? series + ' ' : ''}${num}`;
+    }
+
+    return clean; // Return cleaned raw if it doesn't match standard pattern fully yet
+};
+
+const formatPhoneNumber = (val: string) => {
+    // Keep only numbers
+    const clean = val.replace(/\D/g, '');
+    // Limit to 10 digits
+    return clean.slice(0, 10);
+};
 
 export default function WarrantyForm() {
     const [step, setStep] = useState(1);
@@ -31,6 +77,8 @@ export default function WarrantyForm() {
         message: "",
     });
 
+    const [dropdownOpen, setDropdownOpen] = useState(false);
+
     const [files, setFiles] = useState<{
         vehicleImage: File | null;
         rcImage: File | null;
@@ -40,7 +88,17 @@ export default function WarrantyForm() {
     });
 
     const updateField = (field: string, value: string) => {
-        setFormData((prev) => ({ ...prev, [field]: value }));
+        let finalValue = value;
+        if (field === 'regNumber') {
+            // Just uppercase while typing, format on blur/submit usually, but user asked to reformat 'before submitting'.
+            // We'll keep it uppercase for display.
+            finalValue = value.toUpperCase();
+        }
+        if (field === 'phone' || field === 'installerMobile') {
+            finalValue = formatPhoneNumber(value);
+        }
+
+        setFormData((prev) => ({ ...prev, [field]: finalValue }));
         setError(""); // Clear error on change
     };
 
@@ -51,15 +109,30 @@ export default function WarrantyForm() {
     const validateStep = (currentStep: number) => {
         const d = formData;
         if (currentStep === 1) {
-            if (!d.name || !d.phone || !d.email) return "Please fill in all required fields (Name, Phone, Email).";
+            // Name and Phone are mandatory. Email is optional.
+            if (!d.name || !d.phone) return "Please fill in Name and Phone.";
+            if (d.phone.length < 10) return "Phone number must be 10 digits.";
         }
         if (currentStep === 2) {
-            if (!d.regNumber || !d.chassisNumber || !d.ppfRoll || !d.ppfCategory) return "Please fill in all required vehicle details.";
+            // Reg and Roll and Category are mandatory. Chassis is optional.
+            if (!d.regNumber) return "Registration Number is required.";
+            if (!d.ppfRoll) return "PPF Roll Number is required.";
+            if (!d.ppfCategory) return "PPF Category is required.";
+
+            // PPF Roll Validation
+            const rollPrefix = d.ppfRoll.toUpperCase().slice(0, 2);
+            if (!['GT', 'GN', 'GR'].includes(rollPrefix)) {
+                return "Invalid PPF Roll Number. Please check the code on your warranty card.";
+            }
+
+            // check Reg Number format roughly (at least state code and numbers)
+            if (d.regNumber.length < 6) return "Please enter a valid Registration Number";
         }
         if (currentStep === 3) {
             if (!d.dealerName || !d.installerMobile || !d.installationLocation) return "Please fill in all required dealer details.";
+            if (d.installerMobile.length < 10) return "Installer mobile must be 10 digits.";
         }
-        return null;
+        return null; // Valid
     };
 
     const handleNext = () => {
@@ -91,9 +164,24 @@ export default function WarrantyForm() {
 
         try {
             const submitData = new FormData();
-            Object.entries(formData).forEach(([key, value]) => {
-                submitData.append(key, value);
-            });
+
+            // Format Data before appending
+            const formattedReg = formatRegNumber(formData.regNumber);
+            const formattedPhone = `+91${formData.phone}`; // Add prefix
+            const formattedInstallerPhone = `+91${formData.installerMobile}`; // Add prefix
+
+            submitData.append("name", formData.name);
+            submitData.append("phone", formattedPhone);
+            submitData.append("email", formData.email || ""); // Optional
+            submitData.append("regNumber", formattedReg);
+            submitData.append("chassisNumber", formData.chassisNumber || ""); // Optional
+            submitData.append("ppfRoll", formData.ppfRoll);
+            submitData.append("ppfCategory", formData.ppfCategory);
+            submitData.append("dealerName", formData.dealerName);
+            submitData.append("installerMobile", formattedInstallerPhone);
+            submitData.append("installationLocation", formData.installationLocation);
+            submitData.append("message", formData.message);
+
             if (files.vehicleImage) submitData.append("vehicleImage", files.vehicleImage);
             if (files.rcImage) submitData.append("rcImage", files.rcImage);
 
@@ -103,13 +191,13 @@ export default function WarrantyForm() {
             });
 
             if (!res.ok) {
-                const data = await res.json();
-                throw new Error(data.error || "Something went wrong.");
+                const errData = await res.json();
+                throw new Error(errData.error || "Registration failed");
             }
 
             setIsSubmitted(true);
         } catch (err: any) {
-            setError(err.message || "Failed to submit warranty registration.");
+            setError(err.message || "An error occurred. Please try again.");
         } finally {
             setIsSubmitting(false);
         }
@@ -117,297 +205,337 @@ export default function WarrantyForm() {
 
     if (isSubmitted) {
         return (
-            <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="glass p-12 rounded-[2.5rem] border border-white/5 text-center"
-                style={{
-                    background: "#fafafa11",
-                }}
-            >
-                <div className="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-8 border border-green-500/30">
-                    <CheckCircle className="text-green-400" size={40} />
+            <div className="text-center py-20 px-8 bg-dark-bg/50 backdrop-blur-md rounded-2xl border border-white/10">
+                <div className="w-20 h-20 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-6 border border-green-500/20">
+                    <CheckCircle className="text-green-500" size={40} />
                 </div>
-                <h2 className="text-3xl font-black text-white mb-4 uppercase tracking-tighter">Registration Complete!</h2>
-                <p className="text-text-grey max-w-sm mx-auto mb-10 font-medium">
-                    Your warranty has been submitted for verification. We will send your digital certificate to your email within 24 hours.
+                <h3 className="text-3xl font-black text-white mb-4">Registration Successful!</h3>
+                <p className="text-white/60 mb-8 max-w-md mx-auto">
+                    Your warranty has been officially registered with Gentech Guard. A confirmation email has been sent to you.
                 </p>
                 <button
-                    onClick={() => {
-                        setIsSubmitted(false);
-                        setStep(1);
-                        setFormData({
-                            name: "", phone: "", email: "", regNumber: "", chassisNumber: "",
-                            ppfRoll: "", ppfCategory: "", dealerName: "", installerMobile: "",
-                            installationLocation: "", message: ""
-                        });
-                        setFiles({ vehicleImage: null, rcImage: null });
-                    }}
-                    className="bg-primary-blue text-white px-10 py-4 rounded-xl font-black text-sm uppercase tracking-widest neon-glow"
+                    onClick={() => window.location.reload()}
+                    className="bg-primary-blue text-white px-8 py-3 rounded-xl font-bold uppercase tracking-widest hover:bg-blue-600 transition-colors"
                 >
-                    Return to Portal
+                    Register Another
                 </button>
-            </motion.div>
+            </div>
         );
     }
 
     return (
-        <div className="glass p-8 md:p-12 rounded-[2.5rem] border border-white/5 relative overflow-hidden"
-            style={{
-                background: "#fafafa11",
-            }}
-        >
-            {/* Step Progress */}
-            <div className="flex justify-between mb-12 relative max-w-sm mx-auto">
-                <div className="absolute top-1/2 left-0 w-full h-0.5 bg-white/5 -translate-y-1/2 z-0" />
-                {steps.map((s) => (
-                    <div key={s.id} className="relative z-10 flex flex-col items-center gap-2">
+        <div className="w-full max-w-3xl mx-auto bg-[#0a0a0a]/80 backdrop-blur-xl rounded-3xl border border-white/5 overflow-hidden shadow-2xl">
+            {/* Header / Steps */}
+            <div className="bg-black/40 border-b border-white/5 p-4 md:p-8">
+                <div className="flex justify-between items-center relative">
+                    {steps.map((s, i) => {
+                        const Icon = s.icon;
+                        const isActive = step >= s.id;
+                        const isCurrent = step === s.id;
+                        return (
+                            <div key={s.id} className="relative z-10 flex flex-col items-center gap-2 flex-1">
+                                <div
+                                    className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center transition-all duration-500 border ${isActive
+                                        ? "bg-primary-blue border-primary-blue text-white shadow-[0_0_15px_rgba(0,170,255,0.5)]"
+                                        : "bg-white/5 border-white/10 text-white/30"
+                                        }`}
+                                >
+                                    <Icon size={18} />
+                                </div>
+                                <span
+                                    className={`text-[10px] md:text-xs font-bold uppercase tracking-wider transition-colors duration-300 ${isActive ? "text-primary-blue" : "text-white/20"
+                                        }`}
+                                >
+                                    {s.title}
+                                </span>
+                            </div>
+                        );
+                    })}
+                    {/* Progress Bar Line */}
+                    <div className="absolute top-5 md:top-6 left-0 w-full h-[2px] bg-white/5 -z-0">
                         <div
-                            className={`w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all duration-500 ${step >= s.id ? "bg-primary-blue border-primary-blue text-white shadow-[0_0_15px_rgba(0,170,255,0.4)]" : "bg-dark-bg border-white/10 text-text-grey"
-                                }`}
-                        >
-                            <s.icon size={18} />
-                        </div>
-                        <span className={`text-[10px] font-black uppercase tracking-widest ${step >= s.id ? "text-white" : "text-text-grey"}`}>
-                            {s.title}
-                        </span>
+                            className="h-full bg-primary-blue transition-all duration-500"
+                            style={{ width: `${((step - 1) / (steps.length - 1)) * 100}%` }}
+                        />
                     </div>
-                ))}
+                </div>
             </div>
 
-            <form onSubmit={handleSubmit}>
-                <div className="min-h-[300px] mb-10">
-                    <AnimatePresence mode="wait">
+            {/* Form Content */}
+            <div className="p-6 md:p-10 relative">
+                <AnimatePresence mode="wait">
+                    <motion.form
+                        key={step}
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: -20 }}
+                        transition={{ duration: 0.2 }}
+                        onSubmit={handleSubmit}
+                        className="space-y-6"
+                    >
                         {step === 1 && (
-                            <motion.div
-                                key="step1"
-                                initial={{ opacity: 0, x: 20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, x: -20 }}
-                                className="grid grid-cols-1 md:grid-cols-2 gap-6"
-                            >
-                                <InputField
-                                    label="Customer Full Name"
-                                    placeholder="e.g. Rahul Sharma"
-                                    value={formData.name}
-                                    onChange={(val: string) => updateField("name", val)}
-                                />
-                                <InputField
-                                    label="Phone Number"
-                                    placeholder="+91 99999 99999"
-                                    value={formData.phone}
-                                    onChange={(val: string) => updateField("phone", val)}
-                                />
-                                <InputField
-                                    label="Email Address"
-                                    placeholder="name@email.com"
-                                    value={formData.email}
-                                    onChange={(val: string) => updateField("email", val)}
-                                />
-                            </motion.div>
+                            <div className="space-y-5">
+                                <div className="space-y-2">
+                                    <label className="text-xs uppercase font-bold text-white/50 tracking-wider">Full Name <span className="text-red-500">*</span></label>
+                                    <input
+                                        type="text"
+                                        required
+                                        value={formData.name}
+                                        onChange={(e) => updateField("name", e.target.value)}
+                                        className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white placeholder:text-white/20 focus:border-primary-blue focus:ring-1 focus:ring-primary-blue transition-all outline-none"
+                                        placeholder="Enter vehicle owner's name"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-xs uppercase font-bold text-white/50 tracking-wider">Phone Number <span className="text-red-500">*</span></label>
+                                    <div className="flex bg-white/5 border border-white/10 rounded-xl overflow-hidden focus-within:border-primary-blue focus-within:ring-1 focus-within:ring-primary-blue transition-all">
+                                        <span className="bg-white/5 text-white/50 px-4 py-4 flex items-center justify-center border-r border-white/10">+91</span>
+                                        <input
+                                            type="tel"
+                                            required
+                                            value={formData.phone}
+                                            onChange={(e) => updateField("phone", e.target.value)}
+                                            className="flex-1 bg-transparent border-none p-4 text-white placeholder:text-white/20 outline-none"
+                                            placeholder="9876543210"
+                                            maxLength={10}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-xs uppercase font-bold text-white/50 tracking-wider">Email Address <span className="text-white/20">(Optional)</span></label>
+                                    <input
+                                        type="email"
+                                        value={formData.email}
+                                        onChange={(e) => updateField("email", e.target.value)}
+                                        className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white placeholder:text-white/20 focus:border-primary-blue focus:ring-1 focus:ring-primary-blue transition-all outline-none"
+                                        placeholder="name@example.com"
+                                    />
+                                </div>
+                            </div>
                         )}
 
                         {step === 2 && (
-                            <motion.div
-                                key="step2"
-                                initial={{ opacity: 0, x: 20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, x: -20 }}
-                                className="grid grid-cols-1 md:grid-cols-2 gap-6"
-                            >
-                                <InputField
-                                    label="Vehicle Registration Number"
-                                    placeholder="DD-00-XX-0000"
-                                    value={formData.regNumber}
-                                    onChange={(val: string) => updateField("regNumber", val)}
-                                />
-                                <InputField
-                                    label="Chassis / VIN Number"
-                                    placeholder="e.g. 1234567890"
-                                    value={formData.chassisNumber}
-                                    onChange={(val: string) => updateField("chassisNumber", val)}
-                                />
-                                <InputField
-                                    label="PPF Roll / Unique Product Code"
-                                    placeholder="e.g. 1234567890"
-                                    value={formData.ppfRoll}
-                                    onChange={(val: string) => updateField("ppfRoll", val)}
-                                />
-                                <InputField
-                                    label="PPF Category"
-                                    placeholder="e.g. Matte / Gloss / Pro"
-                                    value={formData.ppfCategory}
-                                    onChange={(val: string) => updateField("ppfCategory", val)}
-                                />
-                                <FileInput
-                                    label="Vehicle Image with PPF Roll Code"
-                                    subLabel="(Optional)"
-                                    onChange={(file) => handleFileChange("vehicleImage", file)}
-                                    file={files.vehicleImage}
-                                />
-                                <FileInput
-                                    label="RC (Registration Certificate) Image"
-                                    subLabel="(Optional)"
-                                    onChange={(file) => handleFileChange("rcImage", file)}
-                                    file={files.rcImage}
-                                />
-                            </motion.div>
+                            <div className="space-y-5">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                    <div className="space-y-2">
+                                        <label className="text-xs uppercase font-bold text-white/50 tracking-wider">Registration Number <span className="text-red-500">*</span></label>
+                                        <input
+                                            type="text"
+                                            required
+                                            value={formData.regNumber}
+                                            onChange={(e) => updateField("regNumber", e.target.value)}
+                                            className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white placeholder:text-white/20 focus:border-primary-blue focus:ring-1 focus:ring-primary-blue transition-all outline-none uppercase font-mono"
+                                            placeholder="TS 09 AB 1234"
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-xs uppercase font-bold text-white/50 tracking-wider">Chassis / VIN <span className="text-white/20">(Optional)</span></label>
+                                        <input
+                                            type="text"
+                                            value={formData.chassisNumber}
+                                            onChange={(e) => updateField("chassisNumber", e.target.value)}
+                                            className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white placeholder:text-white/20 focus:border-primary-blue focus:ring-1 focus:ring-primary-blue transition-all outline-none uppercase"
+                                            placeholder="MA3..."
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                    <div className="space-y-2">
+                                        <label className="text-xs uppercase font-bold text-white/50 tracking-wider">PPF Roll Code <span className="text-red-500">*</span></label>
+                                        <input
+                                            type="text"
+                                            required
+                                            value={formData.ppfRoll}
+                                            onChange={(e) => updateField("ppfRoll", e.target.value)}
+                                            className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white placeholder:text-white/20 focus:border-primary-blue focus:ring-1 focus:ring-primary-blue transition-all outline-none uppercase"
+                                            placeholder="GT-12345"
+                                        />
+                                        <p className="text-[10px] text-white/30 ml-1">Must start with GT, GN, or GR</p>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-xs uppercase font-bold text-white/50 tracking-wider">PPF Product Category <span className="text-red-500">*</span></label>
+                                        <div className="relative">
+                                            <div
+                                                onClick={() => setDropdownOpen(!dropdownOpen)}
+                                                className={`w-full bg-white/5 border ${dropdownOpen ? 'border-primary-blue ring-1 ring-primary-blue' : 'border-white/10'} rounded-xl p-4 text-white cursor-pointer flex justify-between items-center transition-all hover:bg-white/10`}
+                                            >
+                                                <span className={formData.ppfCategory ? "text-white" : "text-white/20"}>
+                                                    {formData.ppfCategory || "Select Category"}
+                                                </span>
+                                                <ArrowRight size={14} className={`text-white/50 transition-transform duration-300 ${dropdownOpen ? '-rotate-90' : 'rotate-90'}`} />
+                                            </div>
+
+                                            <AnimatePresence>
+                                                {dropdownOpen && (
+                                                    <motion.div
+                                                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                                                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                                                        transition={{ duration: 0.2 }}
+                                                        className="absolute top-full left-0 right-0 mt-2 bg-[#0a0a0a] border border-white/10 rounded-xl shadow-2xl overflow-hidden z-50 backdrop-blur-xl"
+                                                    >
+                                                        {ppfCategories.map((cat) => (
+                                                            <div
+                                                                key={cat}
+                                                                onClick={() => {
+                                                                    updateField("ppfCategory", cat);
+                                                                    setDropdownOpen(false);
+                                                                }}
+                                                                className={`p-4 cursor-pointer text-sm font-medium transition-colors border-b border-white/5 last:border-none flex items-center justify-between group ${formData.ppfCategory === cat
+                                                                    ? "bg-primary-blue/10 text-primary-blue"
+                                                                    : "text-white/70 hover:bg-white/5 hover:text-white"
+                                                                    }`}
+                                                            >
+                                                                {cat}
+                                                                {formData.ppfCategory === cat && <CheckCircle size={14} />}
+                                                            </div>
+                                                        ))}
+                                                    </motion.div>
+                                                )}
+                                            </AnimatePresence>
+                                        </div>
+                                        {/* Overlay to close dropdown when clicking outside */}
+                                        {dropdownOpen && (
+                                            <div className="fixed inset-0 z-40" onClick={() => setDropdownOpen(false)} />
+                                        )}
+                                    </div>
+                                </div>
+                                <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-5">
+                                    <div className="space-y-2">
+                                        <label className="text-xs uppercase font-bold text-white/50 tracking-wider">Vehicle Image <span className="text-white/20">(Optional)</span></label>
+                                        <div className="border border-dashed border-white/20 rounded-xl p-6 text-center hover:bg-white/5 transition-colors cursor-pointer relative">
+                                            <input
+                                                type="file"
+                                                accept="image/*"
+                                                onChange={(e) => handleFileChange("vehicleImage", e.target.files?.[0] || null)}
+                                                className="absolute inset-0 opacity-0 cursor-pointer"
+                                            />
+                                            <div className="flex flex-col items-center gap-2">
+                                                <Upload className="text-primary-blue" size={24} />
+                                                <span className="text-sm text-white/70">
+                                                    {files.vehicleImage ? files.vehicleImage.name : "Click to upload vehicle photo"}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-xs uppercase font-bold text-white/50 tracking-wider">Vehicle Image <span className="text-white/20">(Optional)</span></label>
+                                        <div className="border border-dashed border-white/20 rounded-xl p-6 text-center hover:bg-white/5 transition-colors cursor-pointer relative">
+                                            <input
+                                                type="file"
+                                                accept="image/*"
+                                                onChange={(e) => handleFileChange("rcImage", e.target.files?.[0] || null)}
+                                                className="absolute inset-0 opacity-0 cursor-pointer"
+                                            />
+                                            <div className="flex flex-col items-center gap-2">
+                                                <Upload className="text-primary-blue" size={24} />
+                                                <span className="text-sm text-white/70">
+                                                    {files.rcImage ? files.rcImage.name : "Click to upload RC photo"}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         )}
 
                         {step === 3 && (
-                            <motion.div
-                                key="step3"
-                                initial={{ opacity: 0, x: 20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, x: -20 }}
-                                className="grid grid-cols-1 md:grid-cols-2 gap-6"
-                            >
-                                <InputField
-                                    label="Authorised Studio Name"
-                                    placeholder="Store where installed"
-                                    value={formData.dealerName}
-                                    onChange={(val: string) => updateField("dealerName", val)}
-                                />
-                                <InputField
-                                    label="Installer Mobile Number"
-                                    placeholder="+91 99999 99999"
-                                    value={formData.installerMobile}
-                                    onChange={(val: string) => updateField("installerMobile", val)}
-                                />
-                                <InputField
-                                    label="Installation Location"
-                                    placeholder="e.g. New Delhi"
-                                    value={formData.installationLocation}
-                                    onChange={(val: string) => updateField("installationLocation", val)}
-                                />
-                                <InputField
-                                    label="Message (Optional)"
-                                    placeholder="Any additional information"
-                                    value={formData.message}
-                                    onChange={(val: string) => updateField("message", val)}
-                                    required={false}
-                                />
-                            </motion.div>
+                            <div className="space-y-5">
+                                <div className="space-y-2">
+                                    <label className="text-xs uppercase font-bold text-white/50 tracking-wider">Dealer / Studio Name <span className="text-red-500">*</span></label>
+                                    <input
+                                        type="text"
+                                        required
+                                        value={formData.dealerName}
+                                        onChange={(e) => updateField("dealerName", e.target.value)}
+                                        className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white placeholder:text-white/20 focus:border-primary-blue focus:ring-1 focus:ring-primary-blue transition-all outline-none"
+                                        placeholder="Gentech Authorized Studio"
+                                    />
+                                </div>
+
+                                <div className="space-y-2">
+                                    <label className="text-xs uppercase font-bold text-white/50 tracking-wider">Installer Mobile <span className="text-red-500">*</span></label>
+                                    <div className="flex bg-white/5 border border-white/10 rounded-xl overflow-hidden focus-within:border-primary-blue focus-within:ring-1 focus-within:ring-primary-blue transition-all">
+                                        <span className="bg-white/5 text-white/50 px-4 py-4 flex items-center justify-center border-r border-white/10">+91</span>
+                                        <input
+                                            type="tel"
+                                            required
+                                            value={formData.installerMobile}
+                                            onChange={(e) => updateField("installerMobile", e.target.value)}
+                                            className="flex-1 bg-transparent border-none p-4 text-white placeholder:text-white/20 outline-none"
+                                            placeholder="9876543210"
+                                            maxLength={10}
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <label className="text-xs uppercase font-bold text-white/50 tracking-wider">City / Location <span className="text-red-500">*</span></label>
+                                    <input
+                                        type="text"
+                                        required
+                                        value={formData.installationLocation}
+                                        onChange={(e) => updateField("installationLocation", e.target.value)}
+                                        className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white placeholder:text-white/20 focus:border-primary-blue focus:ring-1 focus:ring-primary-blue transition-all outline-none"
+                                        placeholder="Hyderabad, Khajaguda"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-xs uppercase font-bold text-white/50 tracking-wider">Additional Message <span className="text-white/20">(Optional)</span></label>
+                                    <textarea
+                                        value={formData.message}
+                                        onChange={(e) => updateField("message", e.target.value)}
+                                        className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white placeholder:text-white/20 focus:border-primary-blue focus:ring-1 focus:ring-primary-blue transition-all outline-none h-24 resize-none"
+                                        placeholder="Any notes..."
+                                    />
+                                </div>
+                            </div>
                         )}
-                    </AnimatePresence>
-                </div>
+                    </motion.form>
+                </AnimatePresence>
 
                 {error && (
-                    <motion.div
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="mb-6 bg-red-500/10 border border-red-500/20 p-4 rounded-xl flex items-center gap-3 text-red-400"
-                    >
+                    <div className="mt-6 p-4 bg-red-500/10 border border-red-500/20 rounded-xl flex items-center gap-3 text-red-400 text-sm">
                         <AlertCircle size={18} />
-                        <span className="text-xs font-bold">{error}</span>
-                    </motion.div>
-                )}
-
-                <div className="flex justify-between gap-4 border-t border-white/5 pt-8">
-                    <button
-                        type="button"
-                        onClick={handleBack}
-                        disabled={isSubmitting}
-                        className={`flex items-center gap-2 px-8 py-3 rounded-xl font-bold text-sm transition-all ${step === 1 ? "opacity-0 pointer-events-none" : "hover:text-primary-blue text-white"
-                            }`}
-                    >
-                        <ArrowLeft size={16} />
-                        BACK
-                    </button>
-
-                    {step < 3 ? (
-                        <button
-                            type="button"
-                            onClick={handleNext}
-                            className="bg-primary-blue hover:bg-white hover:text-dark-bg text-white px-10 py-4 rounded-xl font-black text-sm transition-all flex items-center gap-2 neon-glow"
-                        >
-                            NEXT STEP
-                            <ArrowRight size={18} />
-                        </button>
-                    ) : (
-                        <button
-                            type="submit"
-                            disabled={isSubmitting}
-                            className="bg-primary-blue hover:bg-white hover:text-dark-bg text-white px-12 py-4 rounded-xl font-black text-sm transition-all border-2 border-primary-blue neon-glow disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-                        >
-                            {isSubmitting && <Loader2 className="animate-spin" size={16} />}
-                            {isSubmitting ? "REGISTERING..." : "COMPLETE REGISTRATION"}
-                        </button>
-                    )}
-                </div>
-            </form>
-        </div>
-    );
-}
-
-interface InputFieldProps {
-    label: string;
-    placeholder: string;
-    type?: string;
-    value: string;
-    onChange: (val: string) => void;
-    required?: boolean;
-}
-
-function InputField({ label, placeholder, type = "text", value, onChange, required = true }: InputFieldProps) {
-    return (
-        <div className="flex flex-col gap-2">
-            <label className="text-[10px] font-black uppercase tracking-[0.2em] text-text-grey flex items-center gap-1">
-                {label} {required && <span className="text-primary-blue">*</span>}
-            </label>
-            <input
-                type={type}
-                value={value}
-                onChange={(e) => onChange(e.target.value)}
-                placeholder={placeholder}
-                required={required}
-                className="bg-white/5 border border-white/10 rounded-xl py-4 px-5 text-white outline-none focus:border-primary-blue focus:bg-white/10 transition-all font-medium placeholder:text-text-grey/30 text-sm"
-            />
-        </div>
-    );
-}
-
-interface FileInputProps {
-    label: string;
-    subLabel?: string;
-    file: File | null;
-    onChange: (file: File | null) => void;
-}
-
-function FileInput({ label, subLabel, file, onChange }: FileInputProps) {
-    const fileInputRef = useRef<HTMLInputElement>(null);
-
-    return (
-        <div className="flex flex-col gap-2">
-            <label className="text-[10px] font-black uppercase tracking-[0.2em] text-text-grey flex items-center gap-1">
-                {label} <span className="text-text-grey/50 normal-case tracking-normal ml-1">{subLabel}</span>
-            </label>
-            <div
-                onClick={() => fileInputRef.current?.click()}
-                className="cursor-pointer bg-white/5 border border-white/10 border-dashed rounded-xl py-4 px-5 text-white hover:border-primary-blue over:bg-white/10 transition-all flex items-center justify-between group"
-            >
-                <div className="flex items-center gap-3 overflow-hidden">
-                    <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center group-hover:bg-primary-blue group-hover:text-white transition-colors">
-                        <Upload size={14} />
+                        {error}
                     </div>
-                    <span className="text-sm font-medium truncate text-text-grey group-hover:text-white transition-colors">
-                        {file ? file.name : "Click to upload image"}
-                    </span>
-                </div>
-                {file && (
-                    <span className="text-[10px] font-bold bg-green-500/20 text-green-400 px-2 py-1 rounded">ATTACHED</span>
                 )}
             </div>
-            <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={(e) => {
-                    const f = e.target.files?.[0] || null;
-                    onChange(f);
-                }}
-            />
+
+            {/* Footer Buttons */}
+            <div className="p-6 md:p-8 border-t border-white/5 flex justify-between bg-black/40">
+                <button
+                    onClick={handleBack}
+                    disabled={step === 1 || isSubmitting}
+                    className="flex items-center gap-2 px-6 py-3 rounded-xl font-bold uppercase tracking-wider text-sm text-white/50 hover:text-white hover:bg-white/5 transition-colors disabled:opacity-30 disabled:hover:bg-transparent"
+                >
+                    <ArrowLeft size={16} /> Back
+                </button>
+
+                {step < 3 ? (
+                    <button
+                        onClick={handleNext}
+                        className="flex items-center gap-3 bg-primary-blue text-white px-8 py-3 rounded-xl font-bold uppercase tracking-widest text-sm hover:bg-blue-600 transition-colors shadow-[0_0_20px_rgba(0,170,255,0.3)] hover:shadow-[0_0_30px_rgba(0,170,255,0.5)]"
+                    >
+                        Next <ArrowRight size={16} />
+                    </button>
+                ) : (
+                    <button
+                        onClick={handleSubmit}
+                        disabled={isSubmitting}
+                        className="flex items-center gap-3 bg-primary-blue text-white px-8 py-3 rounded-xl font-bold uppercase tracking-widest text-sm hover:bg-blue-600 transition-colors shadow-[0_0_20px_rgba(0,170,255,0.3)] hover:shadow-[0_0_30px_rgba(0,170,255,0.5)] disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        {isSubmitting ? (
+                            <>
+                                <Loader2 className="animate-spin" size={16} /> Submitting...
+                            </>
+                        ) : (
+                            <>Submit Warranty</>
+                        )}
+                    </button>
+                )}
+            </div>
         </div>
     );
 }

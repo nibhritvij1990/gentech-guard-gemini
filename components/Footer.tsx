@@ -4,6 +4,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { Mail, Phone, MapPin, Instagram, Facebook, Youtube, ArrowUpRight, Zap } from "lucide-react";
+import MetallicPaint, { parseLogoImage } from "./MetallicPaint";
+import { useEffect, useState } from "react";
 
 const navLinks = [
     { name: "Home", href: "/" },
@@ -14,13 +16,32 @@ const navLinks = [
     { name: "Contact", href: "/#contact" }
 ];
 
-const products = [
+const productsLinks = [
     "Gloss PPF",
     "Matte PPF",
     "Sun Film"
 ];
 
 export default function Footer() {
+    const [paintData, setPaintData] = useState<ImageData | null>(null);
+
+    useEffect(() => {
+        const loadLogo = async () => {
+            // Fetch the PNG as a blob/file to pass to parseLogoImage helper
+            try {
+                const response = await fetch("/assets/gentech-bitmap.png");
+                if (!response.ok) throw new Error("Failed to fetch bitmap");
+                const blob = await response.blob();
+                const file = new File([blob], "logo.png", { type: "image/png" });
+                const result = await parseLogoImage(file);
+                if (result) setPaintData(result.imageData);
+            } catch (e) {
+                console.error("Failed to load metallic paint logo", e);
+            }
+        };
+        loadLogo();
+    }, []);
+
     return (
         <footer className="relative bg-[#030303] overflow-hidden">
             {/* Top Accent Line */}
@@ -119,7 +140,7 @@ export default function Footer() {
                     <div className="lg:col-span-2">
                         <h4 className="text-[11px] font-black text-primary-blue tracking-[0.3em] uppercase mb-6">Products</h4>
                         <ul className="flex flex-col gap-3">
-                            {products.map((item) => (
+                            {productsLinks.map((item) => (
                                 <li key={item}>
                                     <Link
                                         href="/#solutions"
@@ -168,7 +189,6 @@ export default function Footer() {
                     </div>
                 </div>
 
-                {/* Bottom Bar */}
                 <div className="pt-8 flex flex-col md:flex-row justify-between items-center gap-6">
                     <p className="text-text-grey/60 text-xs font-bold uppercase tracking-widest flex items-center gap-2">
                         <Zap size={12} className="text-primary-blue" />
@@ -181,12 +201,29 @@ export default function Footer() {
                 </div>
             </div>
 
-            {/* Giant Background Text */}
-            <div className="absolute bottom-0 left-0 right-0 overflow-hidden pointer-events-none select-none">
+            {/* Giant Background Text - Lowered opacity for paint visibility if they overlap */}
+            <div className="absolute bottom-0 left-0 right-0 overflow-hidden pointer-events-none select-none z-0">
                 <div className="text-[20vw] font-black text-white/[0.015] uppercase tracking-tighter leading-none whitespace-nowrap translate-y-1/3">
                     GENTECH GUARD
                 </div>
             </div>
+
+            {/* Metallic Paint Effect - Positioned at bottom */}
+            {paintData && (
+                <div className="hidden w-full h-[300px] relative z-0 mx-auto opacity-50 hover:opacity-100 transition-opacity duration-700 pointer-events-none">
+                    <MetallicPaint
+                        imageData={paintData}
+                        params={{
+                            edge: 0,
+                            patternBlur: 0,
+                            patternScale: 2,
+                            refraction: 0.15,
+                            speed: 0.5,
+                            liquid: 0.05
+                        }}
+                    />
+                </div>
+            )}
         </footer>
     );
 }

@@ -258,7 +258,7 @@ const ProductShowcase: React.FC<Props> = ({ products }) => {
                                     ))}
                                 </div>
 
-                                <div className="mt-8 md:mt-10 pt-8 border-t border-white/10 flex justify-end">
+                                <div className="hidden mt-8 md:mt-10 pt-8 border-t border-white/10 flex justify-end">
                                     <Link
                                         href="/#contact"
                                         className="bg-blue-600 text-white px-8 py-3 rounded-lg font-black uppercase tracking-widest hover:bg-blue-500 transition-colors w-full md:w-auto text-center"
