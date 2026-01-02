@@ -140,7 +140,14 @@ export default function SolutionsSection() {
                         alt="Gentech Guard Solutions"
                         fill
                         priority
-                        className="object-cover object-center"
+                        className="object-cover object-center hidden md:block"
+                    />
+                    <Image
+                        src="/assets/solutions_hero_mobile.png"
+                        alt="Gentech Guard Solutions"
+                        fill
+                        priority
+                        className="object-cover object-center block md:hidden"
                     />
                     <div className="absolute inset-0 bg-gradient-to-b from-dark-bg via-transparent to-transparent [box-shadow:0px_-500px_0_0_black]" />
                     <div className="absolute inset-0 bg-gradient-to-t from-dark-bg via-transparent to-transparent" />
@@ -183,7 +190,7 @@ export default function SolutionsSection() {
                             <div className="absolute -inset-[1px] rounded-2xl bg-gradient-to-b from-primary-blue/30 via-primary-blue/10 to-primary-blue/20 opacity-10 group-hover:opacity-40 transition-opacity blur-[1px]" />
 
                             {/* Card Content */}
-                            <div className="relative bg-dark-bg/0 backdrop-blur-md rounded-2xl p-8 border border-primary-blue/30">
+                            <div className="relative bg-dark-bg/0 backdrop-blur-sm rounded-2xl p-8 border border-primary-blue/30">
                                 {/* Fixed height title area for alignment */}
                                 <div className="h-20 flex items-center justify-center mb-4">
                                     <h3 className="text-2xl md:text-3xl font-black text-white text-center">
@@ -231,7 +238,7 @@ export default function SolutionsSection() {
                             <div className="absolute -inset-[1px] rounded-2xl bg-gradient-to-b from-primary-blue/30 via-primary-blue/10 to-primary-blue/20 opacity-10 group-hover:opacity-40 transition-opacity blur-[1px]" />
 
                             {/* Card Content */}
-                            <div className="relative bg-dark-bg/0 backdrop-blur-md rounded-2xl p-8 border border-primary-blue/30">
+                            <div className="relative bg-dark-bg/0 backdrop-blur-sm rounded-2xl p-8 border border-primary-blue/30">
                                 {/* Fixed height title area for alignment */}
                                 <div className="h-20 flex items-center justify-center mb-4">
                                     <h3 className="text-2xl md:text-3xl font-black text-white text-center">

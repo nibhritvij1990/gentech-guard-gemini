@@ -76,20 +76,20 @@ export default function AdminSidebar() {
 
             {/* Sidebar Container */}
             <aside className={`
-                fixed inset-y-0 left-0 z-40 w-[260px] transform transition-transform duration-300 ease-in-out md:translate-x-0 md:static md:h-screen
+                fixed inset-y-0 left-0 z-40 w-[260px] transform transition-transform duration-300 ease-in-out md:translate-x-0 md:static md:h-[100dvh]
                 bg-linear-to-b from-black via-[#110e30] to-[#2a2275] flex flex-col justify-between px-4 py-8 text-white
                 ${isOpen ? "translate-x-0 shadow-2xl" : "-translate-x-full"}
             `}>
                 {/* Top Section */}
                 <div>
                     {/* Brand */}
-                    <div className="flex items-center gap-3 mb-16 mt-10 md:mt-2">
+                    <div className="flex items-center gap-3 mb-16 mt-0 md:mt-2">
                         <div className="w-auto flex flex-1 items-center justify-center">
                             <Image
                                 src="/assets/logo-final-wide.png"
                                 alt="Gentech"
-                                width={120}
-                                height={40}
+                                width={400}
+                                height={200}
                                 className="object-contain h-auto w-full"
                             />
                         </div>

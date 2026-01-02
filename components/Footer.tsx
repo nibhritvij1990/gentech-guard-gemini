@@ -23,25 +23,6 @@ const productsLinks = [
 ];
 
 export default function Footer() {
-    const [paintData, setPaintData] = useState<ImageData | null>(null);
-
-    useEffect(() => {
-        const loadLogo = async () => {
-            // Fetch the PNG as a blob/file to pass to parseLogoImage helper
-            try {
-                const response = await fetch("/assets/gentech-bitmap.png");
-                if (!response.ok) throw new Error("Failed to fetch bitmap");
-                const blob = await response.blob();
-                const file = new File([blob], "logo.png", { type: "image/png" });
-                const result = await parseLogoImage(file);
-                if (result) setPaintData(result.imageData);
-            } catch (e) {
-                console.error("Failed to load metallic paint logo", e);
-            }
-        };
-        loadLogo();
-    }, []);
-
     return (
         <footer className="relative bg-[#030303] overflow-hidden">
             {/* Top Accent Line */}
@@ -155,7 +136,7 @@ export default function Footer() {
                     </div>
 
                     {/* Contact */}
-                    <div className="lg:col-span-4">
+                    <div className="lg:col-span-4 md:row-start-1 md:!col-end-[-1]">
                         <h4 className="text-[11px] font-black text-primary-blue tracking-[0.3em] uppercase mb-6">Get In Touch</h4>
                         <ul className="flex flex-col gap-5">
                             <li className="group flex items-start gap-4">
@@ -209,21 +190,19 @@ export default function Footer() {
             </div>
 
             {/* Metallic Paint Effect - Positioned at bottom */}
-            {paintData && (
-                <div className="hidden w-full h-[300px] relative z-0 mx-auto opacity-50 hover:opacity-100 transition-opacity duration-700 pointer-events-none">
-                    <MetallicPaint
-                        imageData={paintData}
-                        params={{
-                            edge: 0,
-                            patternBlur: 0,
-                            patternScale: 2,
-                            refraction: 0.15,
-                            speed: 0.5,
-                            liquid: 0.05
-                        }}
-                    />
-                </div>
-            )}
+
+            <div className="absolute bottom-[-10%] right-[-4%] h-[400px] z-0 mx-auto opacity-10 hover:opacity-100 transition-opacity duration-700 pointer-events-none">
+                <MetallicPaint
+                    src="/assets/gentech-shield-bitmap.svg"
+                    params={{
+                        edge: 0.0,
+                        patternScale: 2,
+                        speed: 0.3,
+                        liquid: 0.05
+                    }}
+                />
+            </div>
+
         </footer>
     );
 }

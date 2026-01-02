@@ -7,10 +7,12 @@ import WarrantySection from "@/components/WarrantySection";
 import DealerMap from "@/components/DealerMap";
 import ContactForm from "@/components/ContactForm";
 import Footer from "@/components/Footer";
+import MobileSplashScreen from "@/components/MobileSplashScreen";
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-dark-bg text-white selection:bg-primary-blue selection:text-white">
+    <main className="min-h-[100dvh] bg-dark-bg text-white selection:bg-primary-blue selection:text-white">
+      <MobileSplashScreen />
       <Header />
       <Hero />
       <WhySection />

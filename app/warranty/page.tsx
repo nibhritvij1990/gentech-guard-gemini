@@ -10,16 +10,35 @@ import WarrantyChecker from "@/components/WarrantyChecker";
 import WarrantyForm from "@/components/WarrantyForm";
 import { ShieldCheck, UserPlus, ChevronDown, Check, AlertTriangle, Info } from "lucide-react";
 
+import { useSearchParams } from "next/navigation";
+import { Suspense, useEffect } from "react";
+
 export default function WarrantyPage() {
+    return (
+        <Suspense fallback={<div className="min-h-[100dvh] bg-dark-bg" />}>
+            <WarrantyPageContent />
+        </Suspense>
+    );
+}
+
+function WarrantyPageContent() {
+    const searchParams = useSearchParams();
     const [activeTab, setActiveTab] = useState<"check" | "register">("register");
 
+    useEffect(() => {
+        const tab = searchParams.get("tab");
+        if (tab === "check") setActiveTab("check");
+        if (tab === "register") setActiveTab("register");
+    }, [searchParams]);
+
+
     return (
-        <main className="min-h-screen bg-dark-bg text-white selection:bg-primary-blue selection:text-white">
+        <main className="min-h-[100dvh] bg-dark-bg text-white selection:bg-primary-blue selection:text-white">
             <Header />
 
             {/* HERO SECTION */}
-            <section className="relative pt-32 pb-20 overflow-hidden h-screen flex flex-col items-center justify-center">
-                <div className="absolute inset-0 bg-dark-bg z-0 h-screen">
+            <section className="relative pt-32 pb-20 overflow-hidden h-[100dvh] flex flex-col items-center justify-center">
+                <div className="absolute inset-0 bg-dark-bg z-0 h-[100dvh]">
                     <Image
                         src="/assets/Hero Image Warranty.png"
                         alt="Warranty Protection"
@@ -53,13 +72,13 @@ export default function WarrantyPage() {
                         </p>
                         <div className="flex flex-col sm:flex-row gap-4 mb-12 justify-center">
                             <Link
-                                href="/warranty#warranty-portal"
+                                href="/warranty?tab=check#warranty-portal"
                                 className="border border-white/20 hover:border-primary-blue text-white px-8 py-3 rounded-full font-black text-base transition-all backdrop-blur-sm flex items-center justify-center"
                             >
                                 Check Status
                             </Link>
                             <Link
-                                href="/warranty#warranty-portal"
+                                href="/warranty?tab=register#warranty-portal"
                                 className="bg-primary-blue hover:bg-white hover:text-dark-bg text-white px-8 py-3 rounded-full font-black text-base transition-all neon-glow flex items-center justify-center gap-2 group"
                             >
                                 Register

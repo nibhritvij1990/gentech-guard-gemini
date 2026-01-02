@@ -321,11 +321,11 @@ export default function WarrantiesTable() {
                     </button>
                     <button
                         onClick={() => setShowFilters(!showFilters)}
-                        className={`p-2 border border-slate-200 rounded-md transition-colors ${showFilters ? 'bg-indigo-50 text-indigo-600 border-indigo-200' : 'bg-white text-slate-600 hover:bg-slate-50 hover:text-indigo-600'}`}
+                        className={`hidden p-2 border border-slate-200 rounded-md transition-colors ${showFilters ? 'bg-indigo-50 text-indigo-600 border-indigo-200' : 'bg-white text-slate-600 hover:bg-slate-50 hover:text-indigo-600'}`}
                     >
                         <Filter size={16} />
                     </button>
-                    <button className="p-2 bg-white border border-slate-200 rounded-md text-slate-600 hover:bg-slate-50 hover:text-indigo-600 transition-colors">
+                    <button className="hidden p-2 bg-white border border-slate-200 rounded-md text-slate-600 hover:bg-slate-50 hover:text-indigo-600 transition-colors">
                         <Download size={16} />
                     </button>
                 </div>

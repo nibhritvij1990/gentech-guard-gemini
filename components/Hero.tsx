@@ -49,7 +49,7 @@ export default function Hero() {
     return (
         <section
             ref={ref}
-            className="relative h-screen w-full overflow-hidden bg-dark-bg flex items-start md:items-center justify-center pt-20 pb-0 md:pt-0"
+            className="relative h-[100dvh] w-full overflow-hidden bg-dark-bg flex items-start md:items-center justify-center pt-20 pb-0 md:pt-0"
         >
             {/* BACKGROUND: Static for Desktop, Carousel for Mobile */}
             <motion.div

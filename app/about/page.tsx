@@ -21,7 +21,7 @@ const HeroSection = () => {
     const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
 
     return (
-        <section ref={ref} className="relative h-screen w-full overflow-hidden flex items-center justify-center">
+        <section ref={ref} className="relative h-[100dvh] w-full overflow-hidden flex items-center justify-center">
             {/* Background Image with Parallax */}
             <motion.div style={{ y, opacity }} className="absolute inset-0 z-0">
                 <Image
@@ -294,7 +294,7 @@ const QualitySection = () => {
     const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0.3, 1, 1, 0.3]);
 
     return (
-        <section ref={ref} className="relative h-screen w-full overflow-hidden flex items-center justify-center">
+        <section ref={ref} className="relative h-[100dvh] w-full overflow-hidden flex items-center justify-center">
             {/* Top Gradient Fade - Soften transition from previous section */}
             <div className="absolute top-0 left-0 right-0 h-40 bg-gradient-to-b from-dark-bg via-dark-bg/80 to-transparent z-10" />
 
@@ -356,7 +356,7 @@ const QualitySection = () => {
 
 export default function AboutPage() {
     return (
-        <main className="min-h-screen bg-dark-bg text-white selection:bg-primary-blue selection:text-white">
+        <main className="min-h-[100dvh] bg-dark-bg text-white selection:bg-primary-blue selection:text-white">
             <Header />
             <HeroSection />
             <SpecsTicker />

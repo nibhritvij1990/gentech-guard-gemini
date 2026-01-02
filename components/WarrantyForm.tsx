@@ -166,16 +166,21 @@ export default function WarrantyForm() {
             const submitData = new FormData();
 
             // Format Data before appending
+            // Format Data before appending
             const formattedReg = formatRegNumber(formData.regNumber);
             const formattedPhone = `+91${formData.phone}`; // Add prefix
             const formattedInstallerPhone = `+91${formData.installerMobile}`; // Add prefix
+
+            // sanitize
+            const cleanPPFRoll = formData.ppfRoll.replace(/[^a-zA-Z0-9]/g, '');
+            const cleanChassis = formData.chassisNumber ? formData.chassisNumber.replace(/[^a-zA-Z0-9]/g, '') : "";
 
             submitData.append("name", formData.name);
             submitData.append("phone", formattedPhone);
             submitData.append("email", formData.email || ""); // Optional
             submitData.append("regNumber", formattedReg);
-            submitData.append("chassisNumber", formData.chassisNumber || ""); // Optional
-            submitData.append("ppfRoll", formData.ppfRoll);
+            submitData.append("chassisNumber", cleanChassis);
+            submitData.append("ppfRoll", cleanPPFRoll);
             submitData.append("ppfCategory", formData.ppfCategory);
             submitData.append("dealerName", formData.dealerName);
             submitData.append("installerMobile", formattedInstallerPhone);

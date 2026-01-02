@@ -124,7 +124,7 @@ const ProductShowcase: React.FC<Props> = ({ products }) => {
                             }}
                         >
                             {/* Dark Overlay */}
-                            <div className="absolute inset-0 bg-black/60 group-hover:bg-transparent transition-colors duration-500 z-10" />
+                            <div className={`absolute inset-0 group-hover:bg-transparent ${isExpanded ? 'bg-transparent' : 'bg-black/60'} transition-colors duration-500 z-10`} />
 
                             {/* 
                                 TITLE (COLLAPSED STATE)
