@@ -5,9 +5,15 @@ import { Mail, Phone, MessageCircle, ArrowRight, CheckCircle2, Star } from "luci
 import Image from "next/image";
 import Link from "next/link";
 
+import { siteConfig } from "@/lib/site-config";
+import { useGlobalStore } from "@/context/GlobalStore";
+
 export default function ContactForm() {
-    const whatsappNumber = "919989820222"; // Replace with actual number
-    const dealerMessage = "Hi, I am interested in becoming an authorized Gentech Guard Dealer. Please share more details.";
+    const { settings } = useGlobalStore();
+    const config = settings || siteConfig;
+
+    const whatsappNumber = config.contact.whatsapp.number;
+    const dealerMessage = config.contact.whatsapp.defaultMessage;
 
     return (
         <section id="contact" className="relative pb-32 overflow-hidden bg-dark-bg">
@@ -53,7 +59,7 @@ export default function ContactForm() {
                     <ContactCard
                         icon={Phone}
                         title="Call Us"
-                        value="+91 99898 20222"
+                        value={config.contact.phone.display}
                         action="View PPF Solutions"
                         href="#solutions"
                         delay={0.1}
@@ -61,7 +67,7 @@ export default function ContactForm() {
                     <ContactCard
                         icon={Mail}
                         title="Email Us"
-                        value="info@gentechguard.com"
+                        value={config.contact.email}
                         action="View Sunfilm Solutions"
                         href="#solutions"
                         delay={0.2}
@@ -69,7 +75,7 @@ export default function ContactForm() {
                     <ContactCard
                         icon={MessageCircle}
                         title="WhatsApp"
-                        value="+91 99898 20222"
+                        value={config.contact.phone.display}
                         action="Chat Now"
                         href={`https://wa.me/${whatsappNumber}`}
                         delay={0.3}

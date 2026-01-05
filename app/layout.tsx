@@ -14,15 +14,18 @@ const roboto = Roboto_Condensed({
   weight: ["300", "400", "700"],
 });
 
+import { GlobalProvider } from "@/context/GlobalStore";
+import { siteConfig } from "@/lib/site-config";
+
 export const metadata: Metadata = {
-  title: "Gentech Guard® | Future of Automotive Protection",
-  description: "Next-generation Aliphatic TPU protection. Award-winning PPF, Ceramic Coating, and Sun Film for elite vehicles. Secure your passion with India's fastest-growing armor brand.",
+  title: siteConfig.metadata.title,
+  description: siteConfig.metadata.description,
   keywords: ["PPF India", "Automotive Protection", "TPU Film", "Ceramic Coating", "Gentech Guard", "Car Armor"],
   openGraph: {
-    title: "Gentech Guard® | Advanced Automotive Protection",
-    description: "Secure your passion with India's fastest-growing automotive armor brand.",
+    title: siteConfig.metadata.title,
+    description: siteConfig.metadata.description,
     url: "https://gentechguard.com",
-    siteName: "Gentech Guard",
+    siteName: siteConfig.company.name,
     images: [
       {
         url: "/assets/logo-final.png",
@@ -46,7 +49,9 @@ export default function RootLayout({
         className={`${montserrat.variable} ${roboto.variable} antialiased`}
         suppressHydrationWarning
       >
-        {children}
+        <GlobalProvider>
+          {children}
+        </GlobalProvider>
       </body>
     </html>
   );

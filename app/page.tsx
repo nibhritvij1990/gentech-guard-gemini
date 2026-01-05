@@ -56,7 +56,6 @@ export default function EntryPage() {
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.2, duration: 0.8 }}
-              className="mb-12"
             >
               <div className="fixed inset-0 z-[-1]">
                 <Beams

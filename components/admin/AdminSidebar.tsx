@@ -11,7 +11,8 @@ import {
     Menu,
     X,
     User,
-    Package
+    Package,
+    Settings
 } from "lucide-react";
 import Image from "next/image";
 import { createClient } from "@supabase/supabase-js";
@@ -28,6 +29,7 @@ const menuItems = [
     { icon: LayoutDashboard, label: "Dashboard", href: "/admin/dashboard" },
     { icon: Package, label: "Products", href: "/admin/dashboard/products" },
     { icon: User, label: "Users", href: "/admin/dashboard/users" },
+    { icon: Settings, label: "Site Config", href: "/admin/dashboard/config" },
     // Removed "Warranties" as per request since Dashboard IS the warranties view
     // if there are more views later, add them here
 ];

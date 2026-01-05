@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, X, ShieldCheck, Zap } from "lucide-react";
@@ -19,102 +19,21 @@ const sunfilmFeatures = [
     "Crystal clear & scratch-resistant"
 ];
 
-const products = [
-    {
-        id: "gen-5",
-        name: "GEN 5 PPF",
-        shortDesc: "Engineered for Hot Climate Performance",
-        features: [
-            "190 micron High-Clarity TPU",
-            "Fast Self-Healing Top Coat",
-            "Hydrophobic + Anti-Contamination Layer",
-            "Superior Tensile Strength",
-            "Outstanding Gloss Depth"
-        ],
-        specs: [
-            { label: "Thickness", value: "190 microns" },
-            { label: "Warranty", value: "5 Years" },
-            { label: "Finish", value: "Gloss" },
-            { label: "Max Temp", value: "120°C" }
-        ]
-    },
-    {
-        id: "gen-4",
-        name: "GEN 4 PPF",
-        shortDesc: "Reliable TPU Gloss Protection",
-        features: [
-            "175 Micron TPU Gloss Film",
-            "High-Gloss Clear Finish",
-            "Standard Self-Healing Technology",
-            "Excellent Weather Resistance",
-            "Strong Surface Protection"
-        ],
-        specs: [
-            { label: "Thickness", value: "175 microns" },
-            { label: "Warranty", value: "4 Years" },
-            { label: "Finish", value: "High-Gloss" },
-            { label: "Max Temp", value: "115°C" }
-        ]
-    },
-    {
-        id: "gen-pro-6",
-        name: "GEN PRO 6",
-        shortDesc: "High-clarity TPU with hydrophobic properties",
-        features: [
-            "190 micron High-Clarity TPU",
-            "Fast Self-Healing (Heat Activated)",
-            "Superior Tensile Strength",
-            "Advanced UV Inhibitors",
-            "Excellent High-Temp Stability"
-        ],
-        specs: [
-            { label: "Thickness", value: "190 microns" },
-            { label: "Warranty", value: "6 Years" },
-            { label: "Finish", value: "Ultra Gloss" },
-            { label: "Max Temp", value: "120°C" }
-        ]
-    },
-    {
-        id: "gen-ultra-pro-8",
-        name: "GEN ULTRA PRO 8",
-        shortDesc: "Advanced instant self-healing TPU",
-        features: [
-            "215 micron Ultra-Premium TPU",
-            "Instant Self-Healing (No Heat)",
-            "Best-In-Class Stain Resistance",
-            "Ultra Hydrophobic Top-Coat",
-            "150% Stretch"
-        ],
-        specs: [
-            { label: "Thickness", value: "215 microns" },
-            { label: "Warranty", value: "8 Years" },
-            { label: "Finish", value: "Crystal Gloss" },
-            { label: "Max Temp", value: "120°C" }
-        ]
-    },
-    {
-        id: "gen-matte-5",
-        name: "GEN MATTE 5",
-        shortDesc: "Stealth Matte Finish with TPU Protection",
-        features: [
-            "190 micron TPU Matte Film",
-            "Satin-Matte Uniform Texture",
-            "Anti-Fingerprint & Anti-Glare",
-            "UV-Resistant Polymer",
-            "OEM-Style Matte Finish"
-        ],
-        specs: [
-            { label: "Thickness", value: "190 microns" },
-            { label: "Warranty", value: "5 Years" },
-            { label: "Finish", value: "Satin Matte" },
-            { label: "Max Temp", value: "120°C" }
-        ]
-    }
-];
+import { useGlobalStore, Product } from "@/context/GlobalStore";
+
+// Removed hardcoded products array in favor of GlobalStore
 
 export default function SolutionsSection() {
     const ref = useRef(null);
-    const [activeProduct, setActiveProduct] = useState<typeof products[0] | null>(null);
+    const { products, loading } = useGlobalStore();
+    const [activeProduct, setActiveProduct] = useState<Product | null>(null);
+
+    // Set first product as active when loaded
+    useEffect(() => {
+        if (products && products.length > 0 && !activeProduct) {
+            // setActiveProduct(products[0]); // Optional: if we want one open by default
+        }
+    }, [products, activeProduct]);
     const { scrollYProgress } = useScroll({
         target: ref,
         offset: ["start end", "end start"],
@@ -140,7 +59,7 @@ export default function SolutionsSection() {
                         alt="Gentech Guard Solutions"
                         fill
                         priority
-                        className="object-cover object-center hidden md:block"
+                        className="object-cover object-bottom hidden md:block"
                     />
                     <Image
                         src="/assets/solutions_hero_mobile.png"

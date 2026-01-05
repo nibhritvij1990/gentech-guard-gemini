@@ -7,6 +7,7 @@ import { createClient } from "@supabase/supabase-js";
 import { Loader2, ShieldCheck, Mail, Lock, User as UserIcon } from "lucide-react";
 import GlassSurface from "@/components/GlassSurface";
 import { Toaster, toast } from 'sonner';
+import MetallicPaint from "@/components/MetallicPaint";
 
 // Initialize Supabase Client
 const supabase = createClient(
@@ -112,13 +113,33 @@ export default function AdminLoginPage() {
                     className="p-8 shadow-2xl"
                 >
                     <div className="w-full flex flex-col items-center justify-center">
-                        <div className="flex justify-center mb-8">
+                        <div className="flex justify-center items-center gap-4 mb-4">
                             <Image
                                 src="/assets/logo-final-wide.png"
                                 alt="Gentech Guard"
                                 width={240}
                                 height={80}
-                                className="h-auto w-48 drop-shadow-lg"
+                                className="h-auto w-48 drop-shadow-lg hidden"
+                            />
+                            <MetallicPaint
+                                src="/assets/gentech-shield-bitmap.svg"
+                                className="!w-[64px] !h-[64px] !object-contain"
+                                params={{
+                                    edge: 0.0,
+                                    patternScale: 2,
+                                    speed: 0.3,
+                                    liquid: 0.05
+                                }}
+                            />
+                            <MetallicPaint
+                                src="/assets/gentech-text-bitmap.svg"
+                                className="!w-[200px] !h-[48px] !object-contain"
+                                params={{
+                                    edge: 0.0,
+                                    patternScale: 2,
+                                    speed: 0.3,
+                                    liquid: 0.05
+                                }}
                             />
                         </div>
                         <div className="w-full">

@@ -11,13 +11,10 @@ const steps = [
     { id: 3, title: "Installation", icon: Wrench },
 ];
 
-const ppfCategories = [
-    "GEN 4 PPF",
-    "GEN 5 PPF",
-    "GEN MATTE 5",
-    "GEN PRO 6",
-    "GEN ULTRA PRO 8"
-];
+import { siteConfig } from "@/lib/site-config";
+import { useGlobalStore } from "@/context/GlobalStore";
+
+// const ppfCategories = siteConfig.productCategories; // We will use GlobalStore if available
 
 // Formatting helper for Indian Reg Numbers (Simple standardized styling)
 const formatRegNumber = (val: string) => {
@@ -77,6 +74,12 @@ export default function WarrantyForm() {
         installationLocation: "",
         message: "",
     });
+
+    // Dynamic Categories
+    const { products } = useGlobalStore();
+    const ppfCategories = products.length > 0
+        ? products.map(p => p.name)
+        : siteConfig.productCategories;
 
     const [dropdownOpen, setDropdownOpen] = useState(false);
 

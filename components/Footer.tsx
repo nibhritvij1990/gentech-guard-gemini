@@ -3,26 +3,28 @@
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { Mail, Phone, MapPin, Instagram, Facebook, Youtube, ArrowUpRight, Zap } from "lucide-react";
+import { Mail, Phone, MapPin, Instagram, Facebook, Youtube, Linkedin, Globe, ArrowUpRight, Zap } from "lucide-react";
 import MetallicPaint, { parseLogoImage } from "./MetallicPaint";
 import { useEffect, useState } from "react";
 
-const navLinks = [
-    { name: "Home", href: "/" },
-    { name: "About Us", href: "/about" },
-    { name: "Solutions", href: "/#solutions" },
-    { name: "Process", href: "/#process" },
-    { name: "E-Warranty", href: "/warranty" },
-    { name: "Contact", href: "/#contact" }
-];
+import { siteConfig } from "@/lib/site-config";
+import { useGlobalStore } from "@/context/GlobalStore";
 
-const productsLinks = [
-    "Gloss PPF",
-    "Matte PPF",
-    "Sun Film"
-];
+const navLinks = siteConfig.navigation;
+
+// We will map products inside the component
 
 export default function Footer() {
+    const { products, settings } = useGlobalStore();
+
+    // Prefer dynamic settings from DB, fallback to static siteConfig
+    const config = settings || siteConfig;
+
+    // Compute dynamic product links
+    const productsLinks = products.length > 0
+        ? products.map(p => p.name)
+        : config.productCategories;
+
     return (
         <footer className="relative bg-[#030303] overflow-hidden">
             {/* Top Accent Line */}
@@ -31,39 +33,9 @@ export default function Footer() {
             {/* Decorative Background */}
             <div className="hidden absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-primary-blue/5 rounded-full blur-[150px] pointer-events-none" />
 
-            {/* CTA Section */}
-            <div className="container mx-auto px-4 md:px-8 pt-8 pb-8 relative z-10">
-                <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    className="hidden text-center mb-20"
-                >
-                    <h2 className="text-4xl md:text-6xl font-black text-white uppercase tracking-tighter mb-6">
-                        Ready to <span className="text-primary-blue">Protect</span>?
-                    </h2>
-                    <p className="text-text-grey text-lg font-medium max-w-xl mx-auto mb-10">
-                        Join India's fastest growing network of certified automotive protection specialists.
-                    </p>
-                    <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                        <Link
-                            href="/#contact"
-                            className="group inline-flex items-center gap-3 px-8 py-4 bg-primary-blue text-white font-black uppercase tracking-widest rounded-full hover:bg-white hover:text-dark-bg transition-all duration-300 shadow-[0_0_30px_rgba(0,170,255,0.3)]"
-                        >
-                            Become a Dealer
-                            <ArrowUpRight size={20} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-                        </Link>
-                        <Link
-                            href="/warranty"
-                            className="inline-flex items-center gap-3 px-8 py-4 border border-white/20 text-white font-black uppercase tracking-widest rounded-full hover:border-primary-blue hover:text-primary-blue transition-all duration-300"
-                        >
-                            Check Warranty
-                        </Link>
-                    </div>
-                </motion.div>
-
-                {/* Main Grid */}
-                <div className="grid grid-cols-12 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-8 py-16 border-y border-white/5">
+            {/* Main Grid */}
+            <div className="container mx-auto px-4 md:px-8 relative z-10">
+                <div className="grid grid-cols-12 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-8 pt-16 pb-8 border-y border-white/5">
                     {/* Brand Column */}
                     <div className="col-span-6 md:col-span-1 lg:col-span-4">
                         <Link href="/" className="inline-block mb-6">
@@ -82,20 +54,29 @@ export default function Footer() {
 
                         {/* Social Icons */}
                         <div className="flex gap-3">
-                            {[
-                                { icon: Instagram, label: "Instagram" },
-                                { icon: Facebook, label: "Facebook" },
-                                { icon: Youtube, label: "YouTube" }
-                            ].map(({ icon: Icon, label }) => (
-                                <a
-                                    key={label}
-                                    href="#"
-                                    aria-label={label}
-                                    className="group w-11 h-11 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-text-grey hover:text-white hover:border-primary-blue hover:bg-primary-blue/10 transition-all duration-300"
-                                >
-                                    <Icon size={18} className="group-hover:scale-110 transition-transform" />
-                                </a>
-                            ))}
+                            {Object.entries(config.socials).map(([key, href]) => {
+                                // Dynamic Icon Mapping
+                                const iconMap: Record<string, any> = {
+                                    instagram: Instagram,
+                                    facebook: Facebook,
+                                    youtube: Youtube,
+                                    linkedin: Linkedin
+                                };
+                                const Icon = iconMap[key.toLowerCase()] || Globe;
+
+                                return (
+                                    <a
+                                        key={key}
+                                        href={href as string}
+                                        aria-label={key}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="group w-11 h-11 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-text-grey hover:text-white hover:border-primary-blue hover:bg-primary-blue/10 transition-all duration-300"
+                                    >
+                                        <Icon size={18} className="group-hover:scale-110 transition-transform" />
+                                    </a>
+                                );
+                            })}
                         </div>
                     </div>
 
@@ -103,7 +84,7 @@ export default function Footer() {
                     <div className="col-span-6 md:col-span-1 lg:col-span-2">
                         <h4 className="text-[11px] font-black text-primary-blue tracking-[0.3em] uppercase mb-6">Navigation</h4>
                         <ul className="flex flex-col gap-3">
-                            {navLinks.map((item) => (
+                            {navLinks.map((item: any) => (
                                 <li key={item.name}>
                                     <Link
                                         href={item.href}
@@ -121,7 +102,7 @@ export default function Footer() {
                     <div className="col-span-6 md:col-span-1 lg:col-span-2">
                         <h4 className="text-[11px] font-black text-primary-blue tracking-[0.3em] uppercase mb-6">Products</h4>
                         <ul className="flex flex-col gap-3">
-                            {productsLinks.map((item) => (
+                            {productsLinks.map((item: string) => (
                                 <li key={item}>
                                     <Link
                                         href="/#solutions"
@@ -145,7 +126,7 @@ export default function Footer() {
                                 </div>
                                 <div>
                                     <p className="text-[10px] text-text-grey uppercase font-black tracking-widest mb-1">Call Us</p>
-                                    <p className="text-white font-bold text-sm">+91 99898 20222</p>
+                                    <a href={`tel:${config.contact.phone.value}`} className="text-white font-bold text-sm hover:text-primary-blue transition-colors">{config.contact.phone.display}</a>
                                 </div>
                             </li>
                             <li className="group flex items-start gap-4">
@@ -154,7 +135,7 @@ export default function Footer() {
                                 </div>
                                 <div>
                                     <p className="text-[10px] text-text-grey uppercase font-black tracking-widest mb-1">Email</p>
-                                    <p className="text-white font-bold text-sm">info@gentechguard.com</p>
+                                    <a href={`mailto:${config.contact.email}`} className="text-white font-bold text-sm hover:text-primary-blue transition-colors">{config.contact.email}</a>
                                 </div>
                             </li>
                             <li className="group flex items-start gap-4">
@@ -163,17 +144,17 @@ export default function Footer() {
                                 </div>
                                 <div>
                                     <p className="text-[10px] text-text-grey uppercase font-black tracking-widest mb-1">Headquarters</p>
-                                    <p className="text-white font-bold text-sm">Hyderabad, Telangana</p>
+                                    <a href={config.contact.address.mapLink} target="_blank" rel="noopener noreferrer" className="text-white font-bold text-sm hover:text-primary-blue transition-colors">{config.contact.address.line2}</a>
                                 </div>
                             </li>
                         </ul>
                     </div>
                 </div>
 
-                <div className="pt-8 flex flex-col md:flex-row justify-between items-center gap-6">
+                <div className="py-4 flex flex-col md:flex-row justify-between items-center gap-6">
                     <p className="text-text-grey/60 text-xs font-bold uppercase tracking-widest flex items-center gap-2">
                         <Zap size={12} className="text-primary-blue" />
-                        © 2025 <span className="text-white/80">Gentech Guard®</span>. All Rights Reserved.
+                        {config.company.copyright}
                     </p>
                     <div className="flex gap-8">
                         <span className="text-text-grey/40 text-xs font-bold uppercase tracking-widest cursor-default">Privacy Policy</span>
@@ -182,15 +163,14 @@ export default function Footer() {
                 </div>
             </div>
 
-            {/* Giant Background Text - Lowered opacity for paint visibility if they overlap */}
+            {/* Giant Background Text */}
             <div className="absolute bottom-0 left-0 right-0 overflow-hidden pointer-events-none select-none z-0">
                 <div className="text-[20vw] font-black text-white/[0.015] uppercase tracking-tighter leading-none whitespace-nowrap translate-y-1/3">
-                    GENTECH GUARD
+                    {config.company.name}
                 </div>
             </div>
 
-            {/* Metallic Paint Effect - Positioned at bottom */}
-
+            {/* Metallic Paint Effect */}
             <div className="absolute bottom-0 top-0 right-[-10%] lg:right-[-5%] z-0 mx-auto opacity-10 hover:opacity-100 transition-opacity duration-700 pointer-events-none">
                 <MetallicPaint
                     src="/assets/gentech-shield-bitmap.svg"

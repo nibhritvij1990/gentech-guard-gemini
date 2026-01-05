@@ -7,14 +7,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 
-const navLinks = [
-    { name: "Home", href: "/home" },
-    { name: "About Us", href: "/about" },
-    { name: "Solutions", href: "/#solutions" },
-    { name: "Process", href: "/#process" },
-    { name: "E-Warranty", href: "/warranty" },
-    { name: "Contact Us", href: "/#contact" },
-];
+import { siteConfig } from "@/lib/site-config";
+
+const navLinks = siteConfig.navigation;
 
 export default function Header() {
     const [isOpen, setIsOpen] = useState(false);
@@ -71,7 +66,7 @@ export default function Header() {
                         </Link>
                     ))}
                     <Link
-                        href="/#contact"
+                        href="/home#contact"
                         className="bg-primary-blue hover:bg-white hover:text-dark-bg text-white px-6 py-2 rounded-full text-sm font-black transition-all neon-glow uppercase tracking-wider whitespace-nowrap"
                     >
                         Become a Dealer
@@ -95,7 +90,7 @@ export default function Header() {
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.3 }}
-                        className="lg:hidden fixed inset-0 bg-black/80 backdrop-blur-md z-40"
+                        className="lg:hidden hidden h-[100dvh] fixed inset-0 bg-black/80 backdrop-blur-md z-40 overscroll-none"
                         onClick={() => setIsOpen(false)}
                     />
                 )}
@@ -108,7 +103,7 @@ export default function Header() {
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: "auto" }}
                         exit={{ opacity: 0, height: 0 }}
-                        className="lg:hidden bg-dark-bg border-b border-white/10 overflow-hidden relative z-50 py-8"
+                        className="lg:hidden bg-dark-bg border-b border-white/10 overflow-hidden relative z-50 py-8 shadow-[0_500px_0_rgba(0,0,0,0.9)]"
                     >
                         <div className="flex flex-col p-6 gap-6">
                             {navLinks.map((link) => (
@@ -123,7 +118,7 @@ export default function Header() {
                                 </Link>
                             ))}
                             <Link
-                                href="/#contact"
+                                href="/home#contact"
                                 className="bg-primary-blue py-2 mt-2 text-white px-6 py-3 rounded-lg text-center font-black uppercase tracking-wider neon-glow"
                                 onClick={() => setIsOpen(false)}
                             >

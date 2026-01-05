@@ -45,7 +45,8 @@
     "react-leaflet": "^5.0.0",
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.4.0",
-    "three": "^0.182.0"
+    "three": "^0.182.0",
+    "zustand": "^5.0.9"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
