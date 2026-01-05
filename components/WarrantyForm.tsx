@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { User, Car, Wrench, ArrowRight, ArrowLeft, Upload, Loader2, AlertCircle, CheckCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { createClient } from "@supabase/supabase-js";
 
 const steps = [
     { id: 1, title: "Owner Info", icon: User },
@@ -163,45 +164,71 @@ export default function WarrantyForm() {
         setError("");
 
         try {
-            const submitData = new FormData();
+            // Initialize Supabase
+            const supabase = createClient(
+                process.env.NEXT_PUBLIC_SUPABASE_URL!,
+                process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+            );
 
-            // Format Data before appending
-            // Format Data before appending
-            const formattedReg = formatRegNumber(formData.regNumber);
-            const formattedPhone = `+91${formData.phone}`; // Add prefix
-            const formattedInstallerPhone = `+91${formData.installerMobile}`; // Add prefix
+            let vehicleImgUrl = "";
+            let rcImgUrl = "";
 
-            // sanitize
+            // Helper to upload
+            const uploadFile = async (file: File, path: string) => {
+                const ext = file.name.split('.').pop();
+                const fileName = `${Date.now()}_${Math.random().toString(36).substr(2, 9)}.${ext}`;
+                const filePath = `${path}/${fileName}`;
+
+                const { data, error } = await supabase.storage
+                    .from('warranty-uploads') // Ensure this bucket exists or use a public one
+                    .upload(filePath, file);
+
+                if (error) throw error;
+
+                // Get Public URL
+                const { data: { publicUrl } } = supabase.storage
+                    .from('warranty-uploads')
+                    .getPublicUrl(filePath);
+
+                return publicUrl;
+            };
+
+            // Upload Images if present
+            if (files.vehicleImage) {
+                vehicleImgUrl = await uploadFile(files.vehicleImage, 'vehicle_images');
+            }
+            if (files.rcImage) {
+                rcImgUrl = await uploadFile(files.rcImage, 'rc_images');
+            }
+
             const cleanPPFRoll = formData.ppfRoll.replace(/[^a-zA-Z0-9]/g, '');
             const cleanChassis = formData.chassisNumber ? formData.chassisNumber.replace(/[^a-zA-Z0-9]/g, '') : "";
 
-            submitData.append("name", formData.name);
-            submitData.append("phone", formattedPhone);
-            submitData.append("email", formData.email || ""); // Optional
-            submitData.append("regNumber", formattedReg);
-            submitData.append("chassisNumber", cleanChassis);
-            submitData.append("ppfRoll", cleanPPFRoll);
-            submitData.append("ppfCategory", formData.ppfCategory);
-            submitData.append("dealerName", formData.dealerName);
-            submitData.append("installerMobile", formattedInstallerPhone);
-            submitData.append("installationLocation", formData.installationLocation);
-            submitData.append("message", formData.message);
+            // Insert Record
+            const { error: insertError } = await supabase
+                .from('warranty_registrations')
+                .insert({
+                    name: formData.name,
+                    phone: `+91${formData.phone}`,
+                    email: formData.email,
+                    reg_number: formatRegNumber(formData.regNumber),
+                    chassis_number: cleanChassis,
+                    ppf_roll: cleanPPFRoll,
+                    ppf_category: formData.ppfCategory,
+                    dealer_name: formData.dealerName,
+                    installer_mobile: `+91${formData.installerMobile}`,
+                    installation_location: formData.installationLocation,
+                    message: formData.message,
+                    vehicle_image_url: vehicleImgUrl,
+                    rc_image_url: rcImgUrl,
+                    status: 'pending' // Default status
+                });
 
-            if (files.vehicleImage) submitData.append("vehicleImage", files.vehicleImage);
-            if (files.rcImage) submitData.append("rcImage", files.rcImage);
-
-            const res = await fetch("/api/warranty/register", {
-                method: "POST",
-                body: submitData,
-            });
-
-            if (!res.ok) {
-                const errData = await res.json();
-                throw new Error(errData.error || "Registration failed");
-            }
+            if (insertError) throw insertError;
 
             setIsSubmitted(true);
         } catch (err: any) {
+            console.error(err);
             setError(err.message || "An error occurred. Please try again.");
         } finally {
             setIsSubmitting(false);

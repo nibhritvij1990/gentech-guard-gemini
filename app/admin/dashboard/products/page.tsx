@@ -214,8 +214,8 @@ export default function ProductsPage() {
                         <Package size={18} />
                     </div>
                     <div>
-                        <p className="font-bold text-slate-800 text-sm">{row.getValue("name")}</p>
-                        <p className="text-[10px] uppercase font-mono text-slate-400 bg-slate-100 w-fit px-1 rounded">{row.original.id}</p>
+                        <p className="font-bold text-slate-800 text-sm whitespace-nowrap">{row.getValue("name")}</p>
+                        <p className="text-[10px] uppercase font-mono text-slate-400 bg-slate-100 w-fit px-1 rounded whitespace-nowrap">{row.original.id}</p>
                     </div>
                 </div>
             ),
@@ -223,7 +223,7 @@ export default function ProductsPage() {
         {
             accessorKey: "short_desc",
             header: "Description",
-            cell: ({ row }) => <span className="text-xs text-slate-600 font-medium line-clamp-1 max-w-[200px]">{row.getValue("short_desc")}</span>,
+            cell: ({ row }) => <span className="text-xs text-slate-600 font-medium line-clamp-2 max-w-[200px]">{row.getValue("short_desc")}</span>,
         },
         {
             id: "details",
@@ -234,9 +234,9 @@ export default function ProductsPage() {
                 const warranty = specs.find(s => s.label.toLowerCase().includes('warranty'))?.value;
 
                 return (
-                    <div className="flex gap-2">
-                        {thickness && <span className="bg-slate-100 text-slate-600 px-2 py-1 rounded text-[10px] font-bold border border-slate-200 flex items-center gap-1"><Layers size={10} /> {thickness}</span>}
-                        {warranty && <span className="bg-emerald-50 text-emerald-600 px-2 py-1 rounded text-[10px] font-bold border border-emerald-100 flex items-center gap-1"><Calendar size={10} /> {warranty}</span>}
+                    <div className="flex gap-2 flex-wrap">
+                        {thickness && <span className="bg-slate-100 text-slate-600 px-2 py-1 rounded text-[10px] font-bold border border-slate-200 flex items-center gap-1 whitespace-nowrap"><Layers size={10} /> {thickness}</span>}
+                        {warranty && <span className="bg-emerald-50 text-emerald-600 px-2 py-1 rounded text-[10px] font-bold border border-emerald-100 flex items-center gap-1 whitespace-nowrap"><Calendar size={10} /> {warranty}</span>}
                     </div>
                 );
             }
@@ -244,7 +244,7 @@ export default function ProductsPage() {
         {
             accessorKey: "features",
             header: "Features",
-            cell: ({ row }) => <span className="text-xs text-slate-400 font-mono bg-slate-50 px-2 py-1 rounded-md">{row.original.features?.length || 0} features listed</span>
+            cell: ({ row }) => <span className="text-xs text-slate-400 font-mono bg-slate-50 px-2 py-1 rounded-md cursor-pointer whitespace-nowrap" onClick={() => openEditModal(row.original)}> {row.original.features?.length || 0} features listed</span>
         },
         {
             id: "actions",
@@ -289,7 +289,7 @@ export default function ProductsPage() {
                     <span className="text-slate-300">/</span>
                     <span className="text-slate-900 font-medium">Products</span>
                 </div>
-                <div className="flex justify-between items-center">
+                <div className="flex justify-between items-center mt-[48px] md:mt-0">
                     <h1 className="text-2xl font-bold tracking-tight text-slate-900">Product Catalog</h1>
                     <button
                         onClick={openCreateModal}

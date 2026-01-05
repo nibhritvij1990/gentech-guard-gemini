@@ -112,8 +112,8 @@ export default function UsersPage() {
             header: "Role",
             cell: ({ row }) => (
                 <span className={`px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${row.getValue("role") === 'superadmin'
-                        ? 'bg-purple-50 text-purple-600 border border-purple-100'
-                        : 'bg-indigo-50 text-indigo-600 border border-indigo-100'
+                    ? 'bg-purple-50 text-purple-600 border border-purple-100'
+                    : 'bg-indigo-50 text-indigo-600 border border-indigo-100'
                     }`}>
                     {row.getValue("role")}
                 </span>
@@ -128,8 +128,8 @@ export default function UsersPage() {
                     <button
                         onClick={() => toggleStatus(row.original.id, isActive)}
                         className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border transition-all cursor-pointer ${isActive
-                                ? 'bg-emerald-50 text-emerald-600 border-emerald-100 hover:bg-red-50 hover:text-red-600 hover:border-red-100'
-                                : 'bg-slate-100 text-slate-500 border-slate-200 hover:bg-emerald-50 hover:text-emerald-600 hover:border-emerald-100'
+                            ? 'bg-emerald-50 text-emerald-600 border-emerald-100 hover:bg-red-50 hover:text-red-600 hover:border-red-100'
+                            : 'bg-slate-100 text-slate-500 border-slate-200 hover:bg-emerald-50 hover:text-emerald-600 hover:border-emerald-100'
                             }`}
                         title="Click to toggle status"
                     >
@@ -145,7 +145,7 @@ export default function UsersPage() {
         {
             id: "actions",
             cell: ({ row }) => (
-                <div className="text-slate-400 hover:text-slate-600 cursor-pointer">
+                <div className="text-slate-400 hover:text-slate-600 cursor-pointer hidden">
                     <MoreVertical size={16} />
                 </div>
             )
@@ -174,7 +174,7 @@ export default function UsersPage() {
                     <span className="text-slate-300">/</span>
                     <span className="text-slate-900 font-medium">Users</span>
                 </div>
-                <h1 className="text-2xl font-bold tracking-tight text-slate-900">User Management</h1>
+                <h1 className="text-2xl font-bold tracking-tight text-slate-900 mt-[48px] md:mt-0">User Management</h1>
             </div>
 
             {/* Table Area */}

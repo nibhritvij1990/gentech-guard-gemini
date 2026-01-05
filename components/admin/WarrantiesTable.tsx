@@ -207,12 +207,37 @@ export default function WarrantiesTable() {
         {
             accessorKey: "ppf_roll",
             header: "Roll Code",
-            cell: ({ row }) => <TruncatedCell text={row.getValue("ppf_roll")} />,
+            cell: ({ row }) => <span className="font-mono text-xs whitespace-nowrap">{row.getValue("ppf_roll")}</span>,
+        },
+        {
+            accessorKey: "ppf_category",
+            header: "Category",
+            cell: ({ row }) => <span className="text-xs font-medium bg-slate-100 px-2 py-0.5 rounded text-slate-600 whitespace-nowrap">{row.getValue("ppf_category")}</span>,
+        },
+        {
+            accessorKey: "chassis_number",
+            header: "Chassis / VIN",
+            cell: ({ row }) => <TruncatedCell text={row.getValue("chassis_number")} />,
         },
         {
             accessorKey: "dealer_name",
             header: "Dealer",
-            cell: ({ row }) => <TruncatedCell text={row.getValue("dealer_name")} />,
+            cell: ({ row }) => <span className="font-semibold text-xs text-slate-700 whitespace-nowrap">{row.getValue("dealer_name")}</span>,
+        },
+        {
+            accessorKey: "installation_location",
+            header: "Location",
+            cell: ({ row }) => <span className="text-xs text-slate-500 whitespace-nowrap">{row.getValue("installation_location")}</span>,
+        },
+        {
+            accessorKey: "installer_mobile",
+            header: "Installer Phone",
+            cell: ({ row }) => <span className="text-xs font-mono text-slate-400 whitespace-nowrap">{row.getValue("installer_mobile")}</span>,
+        },
+        {
+            accessorKey: "message",
+            header: "Notes",
+            cell: ({ row }) => <TruncatedCell text={row.getValue("message")} />,
         },
         {
             id: "evidence",

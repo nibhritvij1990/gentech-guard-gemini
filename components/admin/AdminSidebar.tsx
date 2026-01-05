@@ -16,6 +16,7 @@ import {
 import Image from "next/image";
 import { createClient } from "@supabase/supabase-js";
 import { toast } from "sonner";
+import MetallicPaint from "../MetallicPaint";
 
 // Initialize Supabase Client
 const supabase = createClient(
@@ -65,7 +66,7 @@ export default function AdminSidebar() {
     return (
         <>
             {/* Mobile Hamburguer (Visible only on small screens) */}
-            <div className="md:hidden fixed top-6 right-4 z-50">
+            <div className="md:hidden fixed top-6 right-4 z-[100]">
                 <button
                     onClick={() => setIsOpen(!isOpen)}
                     className="text-[#1e1b4b] bg-white p-2 rounded-lg shadow-lg"
@@ -77,7 +78,7 @@ export default function AdminSidebar() {
             {/* Sidebar Container */}
             <aside className={`
                 fixed inset-y-0 left-0 z-40 w-[260px] transform transition-transform duration-300 ease-in-out md:translate-x-0 md:static md:h-[100dvh]
-                bg-linear-to-b from-black via-[#110e30] to-[#2a2275] flex flex-col justify-between px-4 py-8 text-white
+                bg-linear-to-b from-black via-[#110e30] to-[#2a2275] flex flex-col justify-between px-4 py-8 text-white overflow-hidden
                 ${isOpen ? "translate-x-0 shadow-2xl" : "-translate-x-full"}
             `}>
                 {/* Top Section */}
@@ -126,6 +127,20 @@ export default function AdminSidebar() {
 
                 {/* Bottom Section */}
                 <div>
+                    {/* Metallic Paint Effect - Positioned at bottom */}
+
+                    <div className="absolute bottom-[-2%] right-[-12%] left-[-12%] z-0 mx-auto opacity-10 hover:opacity-100 transition-opacity duration-700 pointer-events-none">
+                        <MetallicPaint
+                            src="/assets/gentech-shield-bitmap.svg"
+                            params={{
+                                edge: 0.0,
+                                patternScale: 2,
+                                speed: 0.3,
+                                liquid: 0.05
+                            }}
+                        />
+                    </div>
+
                     <div className="mb-6 px-3">
                         <p className="text-xs text-white/40 leading-relaxed font-sans">
                             Gentech Guard Admin Console v1.0 <br />

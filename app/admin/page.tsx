@@ -99,15 +99,7 @@ export default function AdminLoginPage() {
             </div>
 
             <div className="relative z-10 p-6">
-                <div className="flex justify-center mb-8">
-                    <Image
-                        src="/assets/logo-final-wide.png"
-                        alt="Gentech Guard"
-                        width={240}
-                        height={80}
-                        className="h-auto w-48 drop-shadow-lg"
-                    />
-                </div>
+
 
                 <GlassSurface
                     borderRadius={24}
@@ -116,92 +108,103 @@ export default function AdminLoginPage() {
                     blur={20}
                     borderWidth={0.1}
                     width="clamp(300px, 500px, 90vw)"
-                    height="clamp(400px, 480px, 90vh)"
+                    height={isLogin ? "clamp(400px, 550px, 90vh)" : "clamp(500px, 610px, 90vh)"}
                     className="p-8 shadow-2xl"
                 >
-                    <div className="w-full">
-                        <div className="text-center mb-8">
-                            <h1 className="text-2xl font-black text-white uppercase tracking-wider mb-2">
-                                {isLogin ? "Admin Login" : "Request Access"}
-                            </h1>
-                            <p className="text-blue-100/70 text-sm">
-                                {isLogin ? "Enter your credentials to continue" : "Join the administrative team"}
-                            </p>
-                        </div>
-
-                        {/* Toggle */}
-                        <div className="flex bg-black/40 p-1 rounded-xl mb-8 relative">
-                            <div
-                                className="absolute inset-y-1 w-1/2 bg-primary-blue rounded-lg transition-all duration-300 shadow-lg"
-                                style={{ left: isLogin ? '4px' : 'calc(50% - 4px)' }}
+                    <div className="w-full flex flex-col items-center justify-center">
+                        <div className="flex justify-center mb-8">
+                            <Image
+                                src="/assets/logo-final-wide.png"
+                                alt="Gentech Guard"
+                                width={240}
+                                height={80}
+                                className="h-auto w-48 drop-shadow-lg"
                             />
-                            <button
-                                onClick={() => setIsLogin(true)}
-                                className={`flex-1 py-2 text-sm font-bold uppercase tracking-wider relative z-10 transition-colors ${isLogin ? 'text-white' : 'text-blue-200/60 hover:text-white'}`}
-                            >
-                                Login
-                            </button>
-                            <button
-                                onClick={() => setIsLogin(false)}
-                                className={`flex-1 py-2 text-sm font-bold uppercase tracking-wider relative z-10 transition-colors ${!isLogin ? 'text-white' : 'text-blue-200/60 hover:text-white'}`}
-                            >
-                                Register
-                            </button>
                         </div>
+                        <div className="w-full">
+                            <div className="text-center mb-8">
+                                <h1 className="text-2xl font-black text-white uppercase tracking-wider mb-2">
+                                    {isLogin ? "Admin Login" : "Request Access"}
+                                </h1>
+                                <p className="text-blue-100/70 text-sm">
+                                    {isLogin ? "Enter your credentials to continue" : "Join the administrative team"}
+                                </p>
+                            </div>
 
-                        <form onSubmit={handleAuth} className="flex flex-col gap-4">
-                            {!isLogin && (
+                            {/* Toggle */}
+                            <div className="flex bg-black/40 p-1 rounded-xl mb-8 relative">
+                                <div
+                                    className="absolute inset-y-1 w-1/2 bg-primary-blue rounded-lg transition-all duration-300 shadow-lg"
+                                    style={{ left: isLogin ? '4px' : 'calc(50% - 4px)' }}
+                                />
+                                <button
+                                    onClick={() => setIsLogin(true)}
+                                    className={`flex-1 py-2 text-sm font-bold uppercase tracking-wider relative z-10 transition-colors ${isLogin ? 'text-white' : 'text-blue-200/60 hover:text-white'}`}
+                                >
+                                    Login
+                                </button>
+                                <button
+                                    onClick={() => setIsLogin(false)}
+                                    className={`flex-1 py-2 text-sm font-bold uppercase tracking-wider relative z-10 transition-colors ${!isLogin ? 'text-white' : 'text-blue-200/60 hover:text-white'}`}
+                                >
+                                    Register
+                                </button>
+                            </div>
+
+                            <form onSubmit={handleAuth} className="flex flex-col gap-4">
+                                {!isLogin && (
+                                    <div className="relative group">
+                                        <UserIcon className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-200/50 group-focus-within:text-primary-blue transition-colors" size={18} />
+                                        <input
+                                            type="text"
+                                            placeholder="Full Name"
+                                            required
+                                            value={formData.fullName}
+                                            onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                                            className="w-full bg-black/30 border border-white/10 rounded-xl py-3 pl-10 pr-4 text-white placeholder:text-blue-100/30 text-sm outline-none focus:border-primary-blue/50 focus:bg-black/50 transition-all"
+                                        />
+                                    </div>
+                                )}
+
                                 <div className="relative group">
-                                    <UserIcon className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-200/50 group-focus-within:text-primary-blue transition-colors" size={18} />
+                                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-200/50 group-focus-within:text-primary-blue transition-colors" size={18} />
                                     <input
-                                        type="text"
-                                        placeholder="Full Name"
+                                        type="email"
+                                        placeholder="Email Address"
                                         required
-                                        value={formData.fullName}
-                                        onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                                        value={formData.email}
+                                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                         className="w-full bg-black/30 border border-white/10 rounded-xl py-3 pl-10 pr-4 text-white placeholder:text-blue-100/30 text-sm outline-none focus:border-primary-blue/50 focus:bg-black/50 transition-all"
                                     />
                                 </div>
-                            )}
 
-                            <div className="relative group">
-                                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-200/50 group-focus-within:text-primary-blue transition-colors" size={18} />
-                                <input
-                                    type="email"
-                                    placeholder="Email Address"
-                                    required
-                                    value={formData.email}
-                                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                    className="w-full bg-black/30 border border-white/10 rounded-xl py-3 pl-10 pr-4 text-white placeholder:text-blue-100/30 text-sm outline-none focus:border-primary-blue/50 focus:bg-black/50 transition-all"
-                                />
-                            </div>
+                                <div className="relative group">
+                                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-200/50 group-focus-within:text-primary-blue transition-colors" size={18} />
+                                    <input
+                                        type="password"
+                                        placeholder="Password"
+                                        required
+                                        value={formData.password}
+                                        onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                                        className="w-full bg-black/30 border border-white/10 rounded-xl py-3 pl-10 pr-4 text-white placeholder:text-blue-100/30 text-sm outline-none focus:border-primary-blue/50 focus:bg-black/50 transition-all"
+                                    />
+                                </div>
 
-                            <div className="relative group">
-                                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-200/50 group-focus-within:text-primary-blue transition-colors" size={18} />
-                                <input
-                                    type="password"
-                                    placeholder="Password"
-                                    required
-                                    value={formData.password}
-                                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                                    className="w-full bg-black/30 border border-white/10 rounded-xl py-3 pl-10 pr-4 text-white placeholder:text-blue-100/30 text-sm outline-none focus:border-primary-blue/50 focus:bg-black/50 transition-all"
-                                />
-                            </div>
-
-                            <button
-                                type="submit"
-                                disabled={loading}
-                                className="bg-primary-blue hover:bg-blue-500 text-white py-3.5 rounded-xl font-bold uppercase tracking-widest text-sm transition-all mt-4 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(0,170,255,0.3)] hover:shadow-[0_0_30px_rgba(0,170,255,0.5)]"
-                            >
-                                {loading && <Loader2 className="animate-spin" size={16} />}
-                                {isLogin ? "Sign In" : "Request Access"}
-                            </button>
-                        </form>
+                                <button
+                                    type="submit"
+                                    disabled={loading}
+                                    className="bg-primary-blue hover:bg-blue-500 text-white py-3.5 rounded-xl font-bold uppercase tracking-widest text-sm transition-all mt-4 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(0,170,255,0.3)] hover:shadow-[0_0_30px_rgba(0,170,255,0.5)]"
+                                >
+                                    {loading && <Loader2 className="animate-spin" size={16} />}
+                                    {isLogin ? "Sign In" : "Request Access"}
+                                </button>
+                            </form>
+                        </div>
+                        <div className="text-center mt-6">
+                            <p className="text-[10px] text-white/40 uppercase tracking-[0.2em] font-medium">Restricted Access • Gentech Admin</p>
+                        </div>
                     </div>
                 </GlassSurface>
-                <div className="text-center mt-6">
-                    <p className="text-[10px] text-white/40 uppercase tracking-[0.2em] font-medium">Restricted Access • Gentech Admin</p>
-                </div>
             </div>
             <Toaster position="top-center" theme="dark" />
         </div>
