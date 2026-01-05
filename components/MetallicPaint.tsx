@@ -12,9 +12,9 @@ export type ShaderParams = {
 export const defaultParams: ShaderParams = {
     patternScale: 2,
     refraction: 0.015,
-    edge: 0.4,
-    patternBlur: 0.005,
-    liquid: 0.07,
+    edge: 0.0,
+    patternBlur: 0.01,
+    liquid: 0.1,
     speed: 0.3
 };
 
@@ -48,8 +48,8 @@ export function parseLogoImage(file: File): Promise<{ imageData: ImageData }> {
             }
 
             // Constrain size for performance
-            const MAX_SIZE = 800;
-            const MIN_SIZE = 400;
+            const MAX_SIZE = 400;
+            const MIN_SIZE = 200;
 
             if (width > MAX_SIZE || height > MAX_SIZE || width < MIN_SIZE || height < MIN_SIZE) {
                 if (width > height) {
@@ -123,7 +123,8 @@ export function parseLogoImage(file: File): Promise<{ imageData: ImageData }> {
             const u = new Float32Array(width * height).fill(0);
             const newU = new Float32Array(width * height).fill(0);
             const C = 0.01;
-            const ITERATIONS = 120;
+            // Reduced iterations for performance
+            const ITERATIONS = 40;
 
             function getU(x: number, y: number, arr: Float32Array) {
                 if (x < 0 || x >= width || y < 0 || y >= height) return 0;
@@ -368,8 +369,10 @@ export default function MetallicPaint({
     const [loading, setLoading] = useState(false);
     const [gl, setGl] = useState<WebGL2RenderingContext | null>(null);
     const [uniforms, setUniforms] = useState<Record<string, WebGLUniformLocation>>({});
+
+    // Fix: State independent time tracking
     const totalAnimationTime = useRef(0);
-    const lastRenderTime = useRef(0);
+    const lastRenderTime = useRef(-1);
 
     useEffect(() => {
         let active = true;
@@ -522,18 +525,33 @@ export default function MetallicPaint({
         let renderId: number;
         let isMounted = true;
 
-        function render(currentTime: number) {
+        // Reset timing relative to this render cycle
+        totalAnimationTime.current = 0;
+        lastRenderTime.current = -1;
+
+        function render(timestamp: number) {
             if (!isMounted) return;
-            const deltaTime = currentTime - lastRenderTime.current;
-            lastRenderTime.current = currentTime;
+
+            // Initialize on first frame
+            if (lastRenderTime.current === -1) {
+                lastRenderTime.current = timestamp;
+            }
+
+            const deltaTime = timestamp - lastRenderTime.current;
+            lastRenderTime.current = timestamp;
+
+            // Cap delta time to prevent massive jumps (e.g. background tab)
+            // 100ms max allowed delta
+            const safeDelta = Math.min(deltaTime, 100);
+
             if (uniforms.u_time) {
-                totalAnimationTime.current += deltaTime * params.speed;
+                totalAnimationTime.current += safeDelta * params.speed;
                 gl!.uniform1f(uniforms.u_time, totalAnimationTime.current);
             }
             gl!.drawArrays(gl!.TRIANGLE_STRIP, 0, 4);
             renderId = requestAnimationFrame(render);
         }
-        lastRenderTime.current = performance.now();
+
         renderId = requestAnimationFrame(render);
         return () => { isMounted = false; cancelAnimationFrame(renderId); };
     }, [gl, params.speed, uniforms]);

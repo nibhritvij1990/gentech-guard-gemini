@@ -76,9 +76,11 @@ const Certificate: React.FC<CertificateProps> = ({ data }) => {
         >
 
             {/* Background Ambience / Tech Grid */}
+            {/* Background Ambience / Tech Grid */}
             <div className="absolute inset-0 bg-tech-grid bg-[length:20px_20px] opacity-20 pointer-events-none"></div>
-            <div className="absolute top-0 right-0 w-96 h-96 bg-black rounded-full blur-[100px] pointer-events-none"></div>
-            <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#155dfc22] rounded-full blur-[80px] pointer-events-none"></div>
+            {/* Replaced filter blur with radial gradients for html2canvas compatibility */}
+            <div className="absolute top-0 right-0 w-96 h-96" style={{ background: 'radial-gradient(circle, rgba(0,0,0,1) 0%, rgba(2,6,24,0) 70%)' }}></div>
+            <div className="absolute bottom-0 left-0 w-64 h-64" style={{ background: 'radial-gradient(circle, rgba(21,93,252,0.15) 0%, rgba(2,6,24,0) 70%)' }}></div>
 
             {/* Decorative Border Line */}
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#00b8db] to-transparent"></div>
@@ -89,7 +91,7 @@ const Certificate: React.FC<CertificateProps> = ({ data }) => {
                 <div>
                     <h2 className="text-[#00d3f3] text-xs font-bold tracking-[0.3em] mb-2 uppercase">Official Protection Document</h2>
                     <h1 className="text-4xl font-display font-black uppercase tracking-tight text-white">
-                        Warranty <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00d3f3] to-[#2b82ff]">Certificate</span>
+                        Warranty <span className="text-[#00d3f3]">Certificate</span>
                     </h1>
                 </div>
                 <GentechLogo className="h-16 hidden" />
@@ -100,6 +102,7 @@ const Certificate: React.FC<CertificateProps> = ({ data }) => {
                         width={240}
                         height={80}
                         className="object-contain object-right"
+                        unoptimized
                     />
                 </div>
             </header>
@@ -108,7 +111,7 @@ const Certificate: React.FC<CertificateProps> = ({ data }) => {
             <main className="relative z-10 flex-1 px-12 py-8 flex flex-col gap-8">
 
                 {/* Primary Warranty Details - Hero Section */}
-                <div className="grid grid-cols-2 gap-6 bg-[#10182888] p-6 rounded-xl border border-[#1e2939] backdrop-blur-sm">
+                <div className="grid grid-cols-2 gap-6 bg-[#101828] p-6 rounded-xl border border-[#1e2939]">
                     <div className="space-y-1">
                         <p className="text-[#99a1af] text-xs uppercase tracking-widest">Product Installed</p>
                         <p className="text-2xl font-display font-bold text-white">{data.productName}</p>

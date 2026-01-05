@@ -5,7 +5,7 @@ import { Search, Loader2, AlertCircle, CheckCircle2, Phone, FileText, CarFront, 
 import { motion, AnimatePresence } from "framer-motion";
 import { createClient } from "@supabase/supabase-js";
 import Certificate, { WarrantyData } from "./Certificate";
-import html2canvas from "html2canvas";
+import { toPng } from 'html-to-image';
 import jsPDF from "jspdf";
 import * as Dialog from "@radix-ui/react-dialog";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
@@ -118,7 +118,7 @@ export default function WarrantyChecker() {
                 const { data: product, error: pErr } = await supabase
                     .from('products')
                     .select('*')
-                    .ilike('title', `%${warranty.ppf_category}%`) // Loose match as category might differ slightly from title
+                    .ilike('name', `%${warranty.ppf_category}%`) // Loose match as category might differ slightly from title
                     .limit(1)
                     .single();
 
@@ -138,15 +138,40 @@ export default function WarrantyChecker() {
     const getCertificateData = (): WarrantyData | null => {
         if (!result) return null;
 
-        let duration = "5 Years"; // Default
-        if (result.ppf_category?.includes("TPH")) duration = "3 Years";
-        if (result.ppf_category?.includes("Lite")) duration = "3 Years";
+        let duration = "5 Years"; // Default fallback
+        let foundInSpecs = false;
+
+        if (productDetails?.specs) {
+            let specs = productDetails.specs;
+            // Handle if specs is a string (Text column) or already an object (JSON col)
+            if (typeof specs === 'string') {
+                try {
+                    specs = JSON.parse(specs);
+                } catch (e) {
+                    console.warn("Failed to parse product specs", e);
+                    specs = [];
+                }
+            }
+
+            if (Array.isArray(specs)) {
+                const warrantySpec = specs.find((s: any) => s.label === "Warranty");
+                if (warrantySpec?.value) {
+                    duration = warrantySpec.value;
+                    foundInSpecs = true;
+                }
+            }
+        }
+
+        if (!foundInSpecs) {
+            if (result.ppf_category?.includes("TPH")) duration = "3 Years";
+            if (result.ppf_category?.includes("Lite")) duration = "3 Years";
+        }
         // Override if product details has warranty info? 
         // Assuming database has 'warranty_period' col? I don't know schema. Sticking to logic.
 
         return {
             warrantyId: `GW-${result.id?.toString().padStart(6, '0')}`,
-            productName: productDetails?.title || result.ppf_category || "Gentech PPF",
+            productName: productDetails?.name || result.ppf_category || "Gentech PPF",
             duration,
             serialNumber: result.ppf_roll || "N/A",
             materialConsumed: "Standard Kit", // Placeholder
@@ -168,23 +193,23 @@ export default function WarrantyChecker() {
     const downloadPdf = async () => {
         if (!hiddenCertRef.current) return;
 
-        // Ensure the hidden ref is visible for capture (it can be absolute positioned off screen but must be rendered)
-        // It is rendered below in the JSX.
-
         try {
-            const canvas = await html2canvas(hiddenCertRef.current, {
-                scale: 2, // High res
-                useCORS: true,
-                backgroundColor: '#030712', // match dark theme
-                logging: false
+            const dataUrl = await toPng(hiddenCertRef.current, {
+                quality: 1.0,
+                pixelRatio: 3,
+                backgroundColor: '#020618',
             });
 
-            const imgData = canvas.toDataURL('image/jpeg', 1.0);
             const pdf = new jsPDF('p', 'mm', 'a4');
             const pdfWidth = pdf.internal.pageSize.getWidth();
-            const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
 
-            pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
+            // Manually calculate height ratio instead of getImageProperties which might vary by version
+            // Typically hiddenCertRef width/height are pixels
+            const certWidth = hiddenCertRef.current.scrollWidth;
+            const certHeight = hiddenCertRef.current.scrollHeight;
+            const finalHeight = (certHeight * pdfWidth) / certWidth;
+
+            pdf.addImage(dataUrl, 'PNG', 0, 0, pdfWidth, finalHeight);
             pdf.save(`Gentech-Warranty-${result.id}.pdf`);
 
         } catch (e) {
@@ -293,7 +318,7 @@ export default function WarrantyChecker() {
                                             Active Warranty
                                         </div>
                                         <h3 className="text-2xl font-black text-white leading-tight">
-                                            {productDetails?.title || result.ppf_category}
+                                            {productDetails?.name || result.ppf_category}
                                         </h3>
                                         {productDetails && (
                                             <p className="text-xs text-text-grey mt-1 line-clamp-1">{productDetails.subtitle || "Premium Protection Film"}</p>
@@ -367,8 +392,11 @@ export default function WarrantyChecker() {
             </Dialog.Root>
 
             {/* Off-screen Certificate for PDF Capture */}
-            <div className="absolute top-0 left-[-9999px]" ref={hiddenCertRef}>
-                {result && <Certificate data={getCertificateData()!} />}
+            {/* Placed 'fixed' behind content to ensure full rendering by browser layout engine */}
+            <div className="fixed top-0 left-0 -z-50 opacity-0 pointer-events-none w-[794px] h-[1123px] overflow-hidden">
+                <div ref={hiddenCertRef} className="opacity-100">
+                    {result && <Certificate data={getCertificateData()!} />}
+                </div>
             </div>
 
         </div>

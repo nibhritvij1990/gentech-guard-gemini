@@ -63,10 +63,10 @@ export default function Footer() {
                 </motion.div>
 
                 {/* Main Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-8 py-16 border-y border-white/5">
+                <div className="grid grid-cols-12 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-8 py-16 border-y border-white/5">
                     {/* Brand Column */}
-                    <div className="lg:col-span-4">
-                        <Link href="/" className="inline-block mb-8">
+                    <div className="col-span-6 md:col-span-1 lg:col-span-4">
+                        <Link href="/" className="inline-block mb-6">
                             <div className="w-48 h-12 relative">
                                 <Image
                                     src="/assets/logo-final-wide.png"
@@ -76,7 +76,7 @@ export default function Footer() {
                                 />
                             </div>
                         </Link>
-                        <p className="text-text-grey text-sm font-medium leading-relaxed mb-8 max-w-sm">
+                        <p className="text-text-grey text-sm font-medium leading-relaxed mb-6 max-w-sm">
                             Next-generation automotive protection solutions backed by industry expertise and advanced Aliphatic TPU technology.
                         </p>
 
@@ -100,7 +100,7 @@ export default function Footer() {
                     </div>
 
                     {/* Navigation */}
-                    <div className="lg:col-span-2">
+                    <div className="col-span-6 md:col-span-1 lg:col-span-2">
                         <h4 className="text-[11px] font-black text-primary-blue tracking-[0.3em] uppercase mb-6">Navigation</h4>
                         <ul className="flex flex-col gap-3">
                             {navLinks.map((item) => (
@@ -118,7 +118,7 @@ export default function Footer() {
                     </div>
 
                     {/* Products */}
-                    <div className="lg:col-span-2">
+                    <div className="col-span-6 md:col-span-1 lg:col-span-2">
                         <h4 className="text-[11px] font-black text-primary-blue tracking-[0.3em] uppercase mb-6">Products</h4>
                         <ul className="flex flex-col gap-3">
                             {productsLinks.map((item) => (
@@ -136,7 +136,7 @@ export default function Footer() {
                     </div>
 
                     {/* Contact */}
-                    <div className="lg:col-span-4 md:row-start-1 md:!col-end-[-1]">
+                    <div className="row-start-1 !col-end-[-1] col-span-6 md:col-span-1 lg:col-span-4 md:row-start-1 md:!col-end-[-1]">
                         <h4 className="text-[11px] font-black text-primary-blue tracking-[0.3em] uppercase mb-6">Get In Touch</h4>
                         <ul className="flex flex-col gap-5">
                             <li className="group flex items-start gap-4">
@@ -191,7 +191,7 @@ export default function Footer() {
 
             {/* Metallic Paint Effect - Positioned at bottom */}
 
-            <div className="absolute bottom-[-10%] right-[-4%] h-[400px] z-0 mx-auto opacity-10 hover:opacity-100 transition-opacity duration-700 pointer-events-none">
+            <div className="absolute bottom-0 top-0 right-[-10%] lg:right-[-5%] z-0 mx-auto opacity-10 hover:opacity-100 transition-opacity duration-700 pointer-events-none">
                 <MetallicPaint
                     src="/assets/gentech-shield-bitmap.svg"
                     params={{
