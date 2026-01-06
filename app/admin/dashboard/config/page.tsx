@@ -234,13 +234,18 @@ export default function SiteConfigPage() {
                     <Field label="Company Name" value={config?.company?.name} onChange={(v) => updateConfig('company.name', v)} />
                     <Field label="Legal Name" value={config?.company?.legalName} onChange={(v) => updateConfig('company.legalName', v)} />
                     <Field label="Copyright Text" value={config?.company?.copyright} onChange={(v) => updateConfig('company.copyright', v)} />
+                    <h3 className="text-lg font-bold text-black my-6 uppercase tracking-wider border-b border-black/5 py-2">SEO Metadata</h3>
+                    <div className="space-y-4">
+                        <Field label="Meta Title" value={config?.metadata?.title} onChange={(v) => updateConfig('metadata.title', v)} />
+                        <Field label="Meta Description" value={config?.metadata?.description} onChange={(v) => updateConfig('metadata.description', v)} isTextArea />
+                    </div>
                 </Section>
 
                 {/* SEO */}
-                <Section title="SEO Metadata">
+                {/*Section title="SEO Metadata">
                     <Field label="Meta Title" value={config?.metadata?.title} onChange={(v) => updateConfig('metadata.title', v)} />
                     <Field label="Meta Description" value={config?.metadata?.description} onChange={(v) => updateConfig('metadata.description', v)} isTextArea />
-                </Section>
+                </Section>*/}
             </div>
         </div>
     );

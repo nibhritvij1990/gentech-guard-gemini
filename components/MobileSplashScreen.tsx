@@ -39,10 +39,8 @@ export default function MobileSplashScreen() {
                     transition={{ duration: 0.8 }}
                     className="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center p-8"
                 >
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 1, delay: 0.2 }}
+                    <div
+                        className="flex flex-col items-center justify-center"
                     >
                         <div className="fixed inset-0">
                             <Beams
@@ -85,7 +83,7 @@ export default function MobileSplashScreen() {
                                 }}
                             />
                         </div>
-                    </motion.div>
+                    </div>
                 </motion.div>
             )}
         </AnimatePresence>

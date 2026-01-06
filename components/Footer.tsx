@@ -59,7 +59,8 @@ export default function Footer() {
                                 const iconMap: Record<string, any> = {
                                     instagram: Instagram,
                                     facebook: Facebook,
-                                    youtube: Youtube
+                                    youtube: Youtube,
+                                    linkedin: Linkedin
                                 };
                                 const Icon = iconMap[key.toLowerCase()] || Globe;
 
@@ -170,7 +171,7 @@ export default function Footer() {
             </div>
 
             {/* Metallic Paint Effect */}
-            <div className="absolute bottom-0 top-0 right-[-10%] lg:right-[-5%] z-0 mx-auto opacity-10 hover:opacity-100 transition-opacity duration-700 pointer-events-none">
+            <div className="absolute bottom-0 top-0 right-[-10%] lg:right-[-4%] z-0 mx-auto opacity-10 hover:opacity-100 transition-opacity duration-700 pointer-events-none">
                 <MetallicPaint
                     src="/assets/gentech-shield-bitmap.svg"
                     params={{

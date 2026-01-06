@@ -26,14 +26,6 @@ import * as Popover from "@radix-ui/react-popover";
 type AdminProfile = {
     id: string; // uuid
     email: string; // From auth.users actually, but we might only have it if we join. 
-    // However, for admin_profiles we typically stored metadata. 
-    // If email isn't in admin_profiles, we might need to fetch it or just show ID/Name.
-    // The previous SQL setup didn't explicitly add email to admin_profiles, just linked by ID.
-    // Let's assume for now we might only see what's in admin_profiles or need a join.
-    // Wait, usually we duplicate email to profile for ease, or use a View.
-    // Let's check the SQL setup again? 
-    // The user said "Users (for this there already exists a table)".
-    // I will assume 'admin_profiles' has: id, full_name, role, is_active, created_at.
     full_name: string;
     role: string;
     is_active: boolean;

@@ -38,7 +38,7 @@ export default function AdminSidebar() {
     const pathname = usePathname();
     const router = useRouter();
     const [loading, setLoading] = useState(false);
-    const [userProfile, setUserProfile] = useState<{ fullName: string, email: string } | null>(null);
+    const [userProfile, setUserProfile] = useState<{ fullName: string, email: string, role: string } | null>(null);
     const [isOpen, setIsOpen] = useState(false); // Mobile Menu State
 
     useEffect(() => {
@@ -46,10 +46,11 @@ export default function AdminSidebar() {
             const { data: { user } } = await supabase.auth.getUser();
             if (user) {
                 // Fetch profile logic
-                const { data: profile } = await supabase.from('admin_profiles').select('full_name').eq('id', user.id).single();
+                const { data: profile } = await supabase.from('admin_profiles').select('full_name, role, email').eq('id', user.id).single();
                 setUserProfile({
                     fullName: profile?.full_name || "Admin User",
-                    email: user.email || ""
+                    email: profile?.email || "",
+                    role: profile?.role || ""
                 });
             }
         };
@@ -159,7 +160,7 @@ export default function AdminSidebar() {
                                 </div>
                                 <div className="overflow-hidden">
                                     <p className="text-sm font-bold text-white truncate">{userProfile.fullName}</p>
-                                    <p className="text-[10px] text-indigo-200 truncate uppercase tracking-wider font-semibold">Administrator</p>
+                                    <p className="text-[10px] text-indigo-200 truncate uppercase tracking-wider font-semibold">{userProfile.role}</p>
                                 </div>
                             </div>
                             <button
