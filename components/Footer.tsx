@@ -35,9 +35,9 @@ export default function Footer() {
 
             {/* Main Grid */}
             <div className="container mx-auto px-4 md:px-8 relative z-10">
-                <div className="grid grid-cols-12 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-8 pt-16 pb-8 border-y border-white/5">
+                <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-12 gap-x-2 gap-y-8 md:gap-8 lg:gap-8 pt-16 pb-8 border-y border-white/5">
                     {/* Brand Column */}
-                    <div className="col-span-6 md:col-span-1 lg:col-span-4">
+                    <div className="col-span-2 sm:col-span-1 md:col-span-1 lg:col-span-4">
                         <Link href="/" className="inline-block mb-6">
                             <div className="w-48 h-12 relative">
                                 <Image
@@ -59,8 +59,7 @@ export default function Footer() {
                                 const iconMap: Record<string, any> = {
                                     instagram: Instagram,
                                     facebook: Facebook,
-                                    youtube: Youtube,
-                                    linkedin: Linkedin
+                                    youtube: Youtube
                                 };
                                 const Icon = iconMap[key.toLowerCase()] || Globe;
 
@@ -81,7 +80,7 @@ export default function Footer() {
                     </div>
 
                     {/* Navigation */}
-                    <div className="col-span-6 md:col-span-1 lg:col-span-2">
+                    <div className="col-span-1 md:col-span-1 lg:col-span-2">
                         <h4 className="text-[11px] font-black text-primary-blue tracking-[0.3em] uppercase mb-6">Navigation</h4>
                         <ul className="flex flex-col gap-3">
                             {navLinks.map((item: any) => (
@@ -99,7 +98,7 @@ export default function Footer() {
                     </div>
 
                     {/* Products */}
-                    <div className="col-span-6 md:col-span-1 lg:col-span-2">
+                    <div className="col-span-1 md:col-span-1 lg:col-span-2">
                         <h4 className="text-[11px] font-black text-primary-blue tracking-[0.3em] uppercase mb-6">Products</h4>
                         <ul className="flex flex-col gap-3">
                             {productsLinks.map((item: string) => (
@@ -117,9 +116,9 @@ export default function Footer() {
                     </div>
 
                     {/* Contact */}
-                    <div className="row-start-1 !col-end-[-1] col-span-6 md:col-span-1 lg:col-span-4 md:row-start-1 md:!col-end-[-1]">
+                    <div className="row-start-2 sm:row-start-1 sm:!col-end-[-1] col-span-2 sm:col-span-1 md:col-span-1 lg:col-span-4 md:row-start-1 md:!col-end-[-1]">
                         <h4 className="text-[11px] font-black text-primary-blue tracking-[0.3em] uppercase mb-6">Get In Touch</h4>
-                        <ul className="flex flex-col gap-5">
+                        <ul className="flex flex-row flex-wrap sm:flex-col gap-5">
                             <li className="group flex items-start gap-4">
                                 <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-primary-blue group-hover:border-primary-blue/50 transition-colors shrink-0">
                                     <Phone size={18} />

@@ -83,7 +83,7 @@ export default function Hero() {
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.8, ease: "easeOut" }}
                     >
-                        <div className="w-24 h-24 md:w-32 md:h-32 mb-8 relative justify-self-center md:justify-self-start">
+                        <div className="hidden sm:block w-24 h-24 md:w-32 md:h-32 mb-8 relative justify-self-center md:justify-self-start">
                             <Image
                                 src="/assets/gentech-tall.png"
                                 alt="Gentech Guard Tall Logo"
@@ -92,7 +92,7 @@ export default function Hero() {
                                 priority
                             />
                         </div>
-                        <h1 className="text-4xl md:text-5xl lg:text-6xl font-black leading-tight mb-6">
+                        <h1 className="text-[8cqi] md:text-5xl lg:text-6xl font-black leading-tight mb-6">
                             GENTECH GUARD <br />
                             <span className="blue-text tracking-wider">ADVANCED <br /> PROTECTION FILMS</span>
                         </h1>

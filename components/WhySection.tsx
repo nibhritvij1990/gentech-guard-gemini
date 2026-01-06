@@ -179,13 +179,13 @@ export default function WhySection() {
                         />
 
                         {/* 2. Inner Button Body */}
-                        <div className="relative z-10 flex items-center gap-6 px-10 py-4 bg-[#050505] rounded-full border border-white/5 group-hover:bg-primary-blue transition-colors">
+                        <div className="relative max-w-[80dvw] z-10 flex items-center gap-6 px-10 py-4 bg-[#050505] rounded-full border border-white/5 group-hover:bg-primary-blue transition-colors">
                             <span className="text-white font-black uppercase tracking-[0.3em] text-[11px] md:text-sm">
                                 Discover Our Heritage
                             </span>
 
                             {/* Neon Icon Circle */}
-                            <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary-blue text-white shadow-[0_0_20px_rgba(0,170,255,0.6)] group-hover:scale-110 group-hover:bg-white group-hover:text-primary-blue transition-transform">
+                            <div className="flex items-center justify-center h-10 aspect-square rounded-full bg-primary-blue text-white shadow-[0_0_20px_rgba(0,170,255,0.6)] group-hover:scale-110 group-hover:bg-white group-hover:text-primary-blue transition-transform">
                                 <ArrowRight size={20} />
                             </div>
                         </div>

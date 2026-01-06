@@ -43,7 +43,7 @@ export default function WarrantySection() {
                         borderRadius={100}
                         width={"fit-content"}
                         className="whitespace-nowrap w-fit px-24 py-16 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 group-hover:!shadow-[0_0_16px_0_#00aaff88]"
-                        style={{ position: "absolute" }}
+                        style={{ position: "absolute", maxWidth: "90dvw" }}
                     >
                         <span className="text-xl font-black text-white uppercase w-fit whitespace-nowrap flex items-center justify-center gap-2">
                             <span className="blue-text">Warranty</span>

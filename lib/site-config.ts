@@ -24,8 +24,7 @@ export const siteConfig = {
     socials: {
         instagram: "https://instagram.com/gentechguard",
         facebook: "https://facebook.com/gentechguard",
-        youtube: "https://youtube.com/@gentechguard",
-        linkedin: "https://linkedin.com/company/gentechguard"
+        youtube: "https://youtube.com/@gentechguard"
     },
     navigation: [
         { name: "Home", href: "/home" },

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { createClient } from "@supabase/supabase-js";
-import { Loader2, Save, RefreshCw, AlertCircle, CheckCircle } from "lucide-react";
+import { Loader2, Save, RefreshCw, AlertCircle, CheckCircle, Plus, Trash2 } from "lucide-react";
 import { siteConfig } from "@/lib/site-config";
 import { Toaster, toast } from "sonner";
 
@@ -67,9 +67,35 @@ export default function SiteConfigPage() {
         });
     };
 
+    const addSocial = () => {
+        const name = window.prompt("Enter Social Platform Name (e.g. twitter, threads):");
+        if (!name) return;
+        const cleanName = name.trim().toLowerCase();
+        if (config.socials?.[cleanName]) {
+            toast.error("Platform already exists");
+            return;
+        }
+        updateConfig(`socials.${cleanName}`, "");
+    };
+
+    const removeSocial = (key: string) => {
+        if (!window.confirm(`Are you sure you want to remove ${key}?`)) return;
+        setConfig((prev: any) => {
+            const newConfig = { ...prev };
+            if (newConfig.socials) {
+                const { [key]: _, ...rest } = newConfig.socials;
+                newConfig.socials = rest;
+            }
+            return newConfig;
+        });
+    };
+
     const handleSave = async () => {
         setSaving(true);
         try {
+            // First, delete any existing socials entries to ensure deletions are reflected
+            await supabase.from('site_settings').delete().like('key', 'socials%');
+
             const fieldsToSave = [
                 { k: 'contact.phone.display', v: config.contact?.phone?.display },
                 { k: 'contact.phone.value', v: config.contact?.phone?.value },
@@ -79,10 +105,8 @@ export default function SiteConfigPage() {
                 { k: 'contact.address.line2', v: config.contact?.address?.line2 },
                 { k: 'contact.address.mapLink', v: config.contact?.address?.mapLink },
 
-                { k: 'socials.instagram', v: config.socials?.instagram },
-                { k: 'socials.facebook', v: config.socials?.facebook },
-                { k: 'socials.youtube', v: config.socials?.youtube },
-                { k: 'socials.linkedin', v: config.socials?.linkedin },
+                // Save whole socials object
+                { k: 'socials', v: config.socials },
 
                 { k: 'company.name', v: config.company?.name },
                 { k: 'company.legalName', v: config.company?.legalName },
@@ -113,10 +137,29 @@ export default function SiteConfigPage() {
     if (loading) return <div className="flex justify-center p-20"><Loader2 className="animate-spin text-primary-blue" /></div>;
 
     return (
-        <div className="w-full max-w-4xl mx-auto space-y-8 pb-20">
+        <div className="w-full mx-auto space-y-8 pb-20">
             <Toaster position="top-right" theme="dark" />
-
+            {/* Header */}
             <div className="flex items-center justify-between">
+                <div>
+                    <div className="flex items-center gap-2 text-sm text-slate-500 mb-1">
+                        <span>Admin</span>
+                        <span className="text-slate-300">/</span>
+                        <span className="text-slate-900 font-medium">Config</span>
+                    </div>
+                    <h1 className="text-2xl font-bold tracking-tight text-slate-900 mt-[48px] md:mt-0">Site Configuration</h1>
+                </div>
+                <button
+                    onClick={handleSave}
+                    disabled={saving}
+                    className="bg-primary-blue text-white px-6 py-2 rounded-lg font-bold uppercase tracking-wider flex items-center gap-2 hover:bg-blue-600 transition-colors disabled:opacity-50"
+                >
+                    {saving ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
+                    Save Changes
+                </button>
+            </div>
+
+            <div className="hidden flex items-center justify-between">
                 <div>
                     <h1 className="text-3xl font-black text-black uppercase tracking-tighter">Site Configuration</h1>
                     <p className="text-gray-600 mt-1">Manage global website settings.</p>
@@ -142,7 +185,7 @@ export default function SiteConfigPage() {
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="grid gap-8" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))' }}>
                 {/* Contact Info */}
                 <Section title="Contact Information">
                     <Field label="Phone (Display)" value={config?.contact?.phone?.display} onChange={(v) => updateConfig('contact.phone.display', v)} />
@@ -156,10 +199,34 @@ export default function SiteConfigPage() {
 
                 {/* Social Media */}
                 <Section title="Social Media Links">
-                    <Field label="Instagram" value={config?.socials?.instagram} onChange={(v) => updateConfig('socials.instagram', v)} />
-                    <Field label="Facebook" value={config?.socials?.facebook} onChange={(v) => updateConfig('socials.facebook', v)} />
-                    <Field label="YouTube" value={config?.socials?.youtube} onChange={(v) => updateConfig('socials.youtube', v)} />
-                    <Field label="LinkedIn" value={config?.socials?.linkedin} onChange={(v) => updateConfig('socials.linkedin', v)} />
+                    <div className="space-y-4">
+                        {Object.entries(config?.socials || {}).map(([key, value]) => (
+                            <div key={key} className="flex gap-2 items-end">
+                                <div className="flex-1">
+                                    <Field
+                                        label={key}
+                                        value={value as string}
+                                        onChange={(v) => updateConfig(`socials.${key}`, v)}
+                                    />
+                                </div>
+                                <button
+                                    onClick={() => removeSocial(key)}
+                                    className="p-3 bg-red-50 text-red-500 rounded-lg hover:bg-red-500 hover:text-white transition-all shadow-sm"
+                                    title="Remove Platform"
+                                >
+                                    <Trash2 size={16} />
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+
+                    <button
+                        onClick={addSocial}
+                        className="w-full mt-4 flex items-center justify-center gap-2 py-3 border-2 border-dashed border-gray-200 rounded-xl text-gray-500 hover:border-primary-blue hover:text-primary-blue hover:bg-blue-50/50 transition-all font-bold text-xs uppercase tracking-widest"
+                    >
+                        <Plus size={16} />
+                        Add New Platform
+                    </button>
                 </Section>
 
                 {/* Company Info */}
