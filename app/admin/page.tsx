@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
-import { Loader2, ShieldCheck, Mail, Lock, User as UserIcon } from "lucide-react";
+import { Loader2, Mail, Lock, User as UserIcon, Eye, EyeOff } from "lucide-react";
 import GlassSurface from "@/components/GlassSurface";
 import { Toaster, toast } from 'sonner';
 import MetallicPaint from "@/components/MetallicPaint";
@@ -19,20 +19,25 @@ export default function AdminLoginPage() {
     const router = useRouter();
     const [isLogin, setIsLogin] = useState(true);
     const [loading, setLoading] = useState(false);
-    // const [error, setError] = useState("");
-    // const [message, setMessage] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     const [formData, setFormData] = useState({
         email: "",
         password: "",
+        confirmPassword: "",
         fullName: ""
     });
 
     const handleAuth = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        if (!isLogin && formData.password !== formData.confirmPassword) {
+            toast.error("Passwords do not match!");
+            return;
+        }
+
         setLoading(true);
-        // setError("");
-        // setMessage("");
 
         try {
             if (isLogin) {
@@ -51,7 +56,6 @@ export default function AdminLoginPage() {
                     .eq('id', data.user.id)
                     .single();
 
-                // If profile doesn't exist yet (maybe trigger failed?), we assume false
                 if (profileError || !profile?.is_active) {
                     await supabase.auth.signOut();
                     throw new Error("Your account is pending approval. Please contact the administrator.");
@@ -95,13 +99,10 @@ export default function AdminLoginPage() {
                     className="object-cover"
                     priority
                 />
-                {/* Overlay to ensure text readability if needed, but keeping it light glass effect mainly */}
                 <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" />
             </div>
 
             <div className="relative z-10 p-6">
-
-
                 <GlassSurface
                     borderRadius={24}
                     opacity={0.85}
@@ -109,18 +110,11 @@ export default function AdminLoginPage() {
                     blur={20}
                     borderWidth={0.1}
                     width="clamp(300px, 500px, 90vw)"
-                    height={isLogin ? "clamp(400px, 550px, 90vh)" : "clamp(500px, 610px, 90vh)"}
+                    height={isLogin ? "clamp(400px, 550px, 90vh)" : "clamp(500px, 680px, 90vh)"}
                     className="p-8 shadow-2xl"
                 >
                     <div className="w-full flex flex-col items-center justify-center">
                         <div className="flex justify-center items-center gap-4 mb-4">
-                            <Image
-                                src="/assets/logo-final-wide.png"
-                                alt="Gentech Guard"
-                                width={240}
-                                height={80}
-                                className="h-auto w-48 drop-shadow-lg hidden"
-                            />
                             <MetallicPaint
                                 src="/assets/gentech-shield-bitmap.svg"
                                 className="!w-[64px] !h-[64px] !object-contain"
@@ -202,14 +196,42 @@ export default function AdminLoginPage() {
                                 <div className="relative group">
                                     <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-200/50 group-focus-within:text-primary-blue transition-colors" size={18} />
                                     <input
-                                        type="password"
+                                        type={showPassword ? "text" : "password"}
                                         placeholder="Password"
                                         required
                                         value={formData.password}
                                         onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                                        className="w-full bg-black/30 border border-white/10 rounded-xl py-3 pl-10 pr-4 text-white placeholder:text-blue-100/30 text-sm outline-none focus:border-primary-blue/50 focus:bg-black/50 transition-all"
+                                        className="w-full bg-black/30 border border-white/10 rounded-xl py-3 pl-10 pr-12 text-white placeholder:text-blue-100/30 text-sm outline-none focus:border-primary-blue/50 focus:bg-black/50 transition-all"
                                     />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        className="absolute right-4 top-1/2 -translate-y-1/2 text-blue-200/50 hover:text-white transition-colors"
+                                    >
+                                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                    </button>
                                 </div>
+
+                                {!isLogin && (
+                                    <div className="relative group">
+                                        <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-200/50 group-focus-within:text-primary-blue transition-colors" size={18} />
+                                        <input
+                                            type={showConfirmPassword ? "text" : "password"}
+                                            placeholder="Confirm Password"
+                                            required
+                                            value={formData.confirmPassword}
+                                            onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                                            className="w-full bg-black/30 border border-white/10 rounded-xl py-3 pl-10 pr-12 text-white placeholder:text-blue-100/30 text-sm outline-none focus:border-primary-blue/50 focus:bg-black/50 transition-all"
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                            className="absolute right-4 top-1/2 -translate-y-1/2 text-blue-200/50 hover:text-white transition-colors"
+                                        >
+                                            {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                        </button>
+                                    </div>
+                                )}
 
                                 <button
                                     type="submit"

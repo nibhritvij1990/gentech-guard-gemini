@@ -1,7 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">Gentech Guard</string>
-    <string name="title_activity_main">Gentech Guard</string>
-    <string name="package_name">com.gentechguard.app</string>
+    <!-- Dynamic strings provided by build.gradle flavors -->
     <string name="custom_url_scheme">com.gentechguard.app</string>
 </resources>

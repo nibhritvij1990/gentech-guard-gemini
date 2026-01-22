@@ -15,6 +15,15 @@ export default function EntryPage() {
 
   useEffect(() => {
     const checkDevice = () => {
+      // Check if this is the Admin APK version
+      const isAdminApk = process.env.NEXT_PUBLIC_ADMIN_APK === 'true';
+
+      if (isAdminApk) {
+        // Force redirect to admin if it's the admin app
+        router.replace("/admin");
+        return;
+      }
+
       // Check if mobile
       const mobile = window.innerWidth < 768;
       setIsMobile(mobile);

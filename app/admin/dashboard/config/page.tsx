@@ -142,20 +142,20 @@ export default function SiteConfigPage() {
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
-                    <div className="flex items-center gap-2 text-sm text-slate-500 mb-1">
+                    <div className="flex items-end gap-2 text-sm text-slate-500 mb-1">
                         <span>Admin</span>
                         <span className="text-slate-300">/</span>
                         <span className="text-slate-900 font-medium">Config</span>
                     </div>
-                    <h1 className="text-2xl font-bold tracking-tight text-slate-900 mt-[48px] md:mt-0">Site Configuration</h1>
+                    <h1 className="text-2xl font-bold tracking-tight text-slate-900 mt-[48px] md:mt-0">Website Config</h1>
                 </div>
                 <button
                     onClick={handleSave}
                     disabled={saving}
-                    className="bg-primary-blue text-white px-6 py-2 rounded-lg font-bold uppercase tracking-wider flex items-center gap-2 hover:bg-blue-600 transition-colors disabled:opacity-50"
+                    className="bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold uppercase tracking-wider flex items-center gap-2 hover:bg-indigo-700 transition-colors disabled:opacity-50"
                 >
                     {saving ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
-                    Save Changes
+                    Save
                 </button>
             </div>
 

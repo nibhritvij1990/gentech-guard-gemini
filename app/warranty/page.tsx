@@ -101,8 +101,8 @@ function WarrantyPageContent() {
                 id="warranty-portal"
                 style={{
                     backgroundImage: "url('/assets/spread_bg.png')",
-                    backgroundSize: "100% 160%",
-                    backgroundPosition: "center top",
+                    backgroundSize: "cover",
+                    backgroundPosition: "center bottom",
                     backgroundRepeat: "no-repeat",
                 }}>
                 <div className="absolute inset-0 bg-[linear-gradient(to_bottom,#000000ff_0px,#00000000_200px,#00000000_100%)]" />

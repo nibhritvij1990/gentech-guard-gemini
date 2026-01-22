@@ -36,6 +36,11 @@ export const metadata: Metadata = {
     locale: "en_IN",
     type: "website",
   },
+  icons: {
+    icon: "/assets/gentech-favicon.ico",
+    shortcut: "/assets/gentech-favicon.ico",
+    apple: "/assets/gentech-favicon.ico",
+  },
 };
 
 export default function RootLayout({

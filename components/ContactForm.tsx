@@ -7,6 +7,8 @@ import Link from "next/link";
 
 import { siteConfig } from "@/lib/site-config";
 import { useGlobalStore } from "@/context/GlobalStore";
+import GlassSurface from "./GlassSurface";
+import MetallicPaint from "./MetallicPaint";
 
 export default function ContactForm() {
     const { settings } = useGlobalStore();
@@ -54,35 +56,6 @@ export default function ContactForm() {
                     </motion.div>
                 </div>
 
-                {/* Contact Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto mb-24">
-                    <ContactCard
-                        icon={Phone}
-                        title="Call Us"
-                        value={config.contact.phone.display}
-                        action="View PPF Solutions"
-                        href="#solutions"
-                        delay={0.1}
-                    />
-                    <ContactCard
-                        icon={Mail}
-                        title="Email Us"
-                        value={config.contact.email}
-                        action="View Sunfilm Solutions"
-                        href="#solutions"
-                        delay={0.2}
-                    />
-                    <ContactCard
-                        icon={MessageCircle}
-                        title="WhatsApp"
-                        value={config.contact.phone.display}
-                        action="Chat Now"
-                        href={`https://wa.me/${whatsappNumber}`}
-                        delay={0.3}
-                        isWhatsApp
-                    />
-                </div>
-
                 {/* Become A Dealer Section */}
                 <motion.div
                     initial={{ opacity: 0, y: 40 }}
@@ -124,19 +97,70 @@ export default function ContactForm() {
                             </div>
 
                             {/* Visual/Image Side */}
-                            <div className="relative h-full min-h-[300px] flex items-center justify-center">
+                            <div className="relative h-full min-h-[300px] flex flex-col items-center justify-center">
                                 <div className="absolute inset-0 bg-primary-blue/20 blur-[100px] rounded-full" />
                                 <Image
                                     src="/assets/gentech-tall.png"
                                     alt="Gentech Badge"
                                     width={300}
                                     height={300}
-                                    className="relative z-10 drop-shadow-[0_0_50px_rgba(0,170,255,0.3)] animate-float"
+                                    className="hidden relative z-10 drop-shadow-[0_0_50px_rgba(0,170,255,0.3)] animate-float"
                                 />
+                                <div className="h-64 w-64 justify-self-center">
+                                    <MetallicPaint
+                                        src="/assets/gentech-shield-bitmap.svg"
+                                        params={{
+                                            edge: 0.0,
+                                            patternScale: 2,
+                                            speed: 0.3,
+                                            liquid: 0.05
+                                        }}
+                                    />
+                                </div>
+                                <div className="h-24 w-80 justify-self-center">
+                                    <MetallicPaint
+                                        src="/assets/gentech-text-bitmap.svg"
+                                        params={{
+                                            edge: 0.0,
+                                            patternScale: 2,
+                                            speed: 0.3,
+                                            liquid: 0.05
+                                        }}
+                                    />
+                                </div>
                             </div>
                         </div>
                     </div>
                 </motion.div>
+
+                {/* Contact Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto mt-24">
+                    <ContactCard
+                        icon={Phone}
+                        title="Call Us"
+                        value={config.contact.phone.display}
+                        action="View PPF Solutions"
+                        href="#solutions"
+                        delay={0.1}
+                    />
+                    <ContactCard
+                        icon={Mail}
+                        title="Email Us"
+                        value={config.contact.email}
+                        action="View Sunfilm Solutions"
+                        href="#solutions"
+                        delay={0.2}
+                    />
+                    <ContactCard
+                        icon={MessageCircle}
+                        title="WhatsApp"
+                        value={config.contact.phone.display}
+                        action="Chat Now"
+                        href={`https://wa.me/${whatsappNumber}`}
+                        delay={0.3}
+                        isWhatsApp
+                    />
+                </div>
             </div>
         </section>
     );

@@ -9,6 +9,7 @@ import { toPng } from 'html-to-image';
 import jsPDF from "jspdf";
 import * as Dialog from "@radix-ui/react-dialog";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import GlassSurface from "./GlassSurface";
 
 // Initialize Supabase Client
 const supabase = createClient(
@@ -219,186 +220,195 @@ export default function WarrantyChecker() {
     };
 
     return (
-        <div className="glass p-8 md:p-12 rounded-[2.5rem] border border-white/5 relative overflow-hidden"
-            style={{ background: "#fafafa11" }}
+        <GlassSurface
+            borderRadius={24}
+            opacity={0.85}
+            backgroundOpacity={0.1}
+            blur={20}
+            borderWidth={0.1}
+            width="auto"
+            height="auto"
+            className="p-0 shadow-2xl"
         >
-            <div className="max-w-md mx-auto text-center mb-10">
-                <h2 className="text-2xl font-black mb-4">VERIFY YOUR WARRANTY</h2>
-                <p className="text-text-grey text-sm font-medium">
-                    Select a method to search for your warranty details.
-                </p>
-            </div>
-
-            {/* TAB SELECTOR */}
-            <div className="flex justify-center gap-4 mb-8">
-                {[
-                    { id: 'mobile', label: 'Mobile', icon: Phone },
-                    { id: 'vin', label: 'VIN / Chassis', icon: CarFront },
-                    { id: 'reg', label: 'Reg. Number', icon: FileText },
-                ].map((type) => {
-                    const Icon = type.icon;
-                    const isActive = searchType === type.id;
-                    return (
-                        <button
-                            key={type.id}
-                            onClick={() => { setSearchType(type.id as SearchType); setQuery(""); setError(""); setResult(null); }}
-                            className={`flex flex-col items-center gap-2 p-4 rounded-xl transition-all w-28 ${isActive
-                                ? "bg-primary-blue text-white shadow-lg shadow-blue-500/20"
-                                : "bg-white/5 text-white/40 hover:bg-white/10 hover:text-white"
-                                }`}
-                        >
-                            <Icon size={20} />
-                            <span className="text-[10px] font-bold uppercase tracking-wider">{type.label}</span>
-                        </button>
-                    )
-                })}
-            </div>
-
-            <form onSubmit={handleSearch} className="max-w-lg mx-auto mb-12 relative">
-                <div className="relative group">
-                    {searchType === 'mobile' && (
-                        <div className="absolute left-6 top-1/2 -translate-y-1/2 text-white/30 font-bold z-10 select-none">
-                            +91
-                        </div>
-                    )}
-                    <input
-                        type={searchType === 'mobile' ? "tel" : "text"}
-                        maxLength={searchType === 'mobile' ? 10 : undefined}
-                        value={query}
-                        onChange={(e) => setQuery(e.target.value)}
-                        placeholder={
-                            searchType === 'mobile' ? "Enter 10-digit number" :
-                                searchType === 'vin' ? "Enter Chassis Number" :
-                                    "e.g. TS 09 AB 1234"
-                        }
-                        className={`w-full bg-white/5 border border-white/10 rounded-2xl py-5 pr-6 outline-none focus:border-primary-blue focus:bg-white/10 transition-all font-black tracking-widest uppercase placeholder:text-text-grey/30 placeholder:normal-case ${searchType === 'mobile' ? 'pl-16' : 'pl-6'
-                            }`}
-                    />
-                    <button
-                        type="submit"
-                        disabled={loading}
-                        className="absolute right-2 top-2 bottom-2 bg-primary-blue hover:bg-white hover:text-dark-bg text-white px-6 rounded-xl font-black text-xs transition-all flex items-center gap-2 neon-glow disabled:opacity-50 uppercase tracking-wider"
-                    >
-                        {loading ? <Loader2 className="animate-spin" size={16} /> : <Search size={16} />}
-                        {loading ? "Checking" : "Verify"}
-                    </button>
+            <div className="p-8 md:p-12 rounded-[2.5rem] relative overflow-hidden">
+                <div className="max-w-md mx-auto text-center mb-10">
+                    <h2 className="text-2xl font-black mb-4">VERIFY YOUR WARRANTY</h2>
+                    <p className="text-text-grey text-sm font-medium">
+                        Select a method to search for your warranty details.
+                    </p>
                 </div>
-            </form>
 
-            <AnimatePresence>
-                {error && (
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.95 }}
-                        className="bg-red-500/10 border border-red-500/20 p-6 rounded-2xl flex items-center gap-4 text-red-400 max-w-lg mx-auto mb-8"
-                    >
-                        <AlertCircle className="shrink-0" />
-                        <p className="text-sm font-bold">{error}</p>
-                    </motion.div>
-                )}
+                {/* TAB SELECTOR */}
+                <div className="flex justify-center gap-4 mb-8">
+                    {[
+                        { id: 'mobile', label: 'Mobile', icon: Phone },
+                        { id: 'vin', label: 'VIN / Chassis', icon: CarFront },
+                        { id: 'reg', label: 'Reg. Number', icon: FileText },
+                    ].map((type) => {
+                        const Icon = type.icon;
+                        const isActive = searchType === type.id;
+                        return (
+                            <button
+                                key={type.id}
+                                onClick={() => { setSearchType(type.id as SearchType); setQuery(""); setError(""); setResult(null); }}
+                                className={`flex flex-col items-center gap-2 p-4 rounded-xl transition-all w-28 ${isActive
+                                    ? "bg-primary-blue text-white shadow-lg shadow-blue-500/20"
+                                    : "bg-white/5 text-white/40 hover:bg-white/10 hover:text-white"
+                                    }`}
+                            >
+                                <Icon size={20} />
+                                <span className="text-[10px] font-bold uppercase tracking-wider">{type.label}</span>
+                            </button>
+                        )
+                    })}
+                </div>
 
-                {result && (
-                    <motion.div
-                        initial={{ opacity: 0, y: 30 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="max-w-lg mx-auto"
-                    >
-                        <div className="bg-gradient-to-br from-white/10 to-transparent p-1 rounded-[2.5rem] shadow-2xl">
-                            <div className="bg-dark-bg/90 backdrop-blur-xl rounded-[2.4rem] p-8 border border-white/5 relative overflow-hidden">
-                                {/* Success Badge */}
-                                <div className="absolute top-0 right-0 p-8 opacity-10 pointer-events-none">
-                                    <CheckCircle2 size={120} />
-                                </div>
+                <form onSubmit={handleSearch} className="max-w-lg mx-auto mb-12 relative">
+                    <div className="relative group">
+                        {searchType === 'mobile' && (
+                            <div className="absolute left-6 top-1/2 -translate-y-1/2 text-white/30 font-bold z-10 select-none">
+                                +91
+                            </div>
+                        )}
+                        <input
+                            type={searchType === 'mobile' ? "tel" : "text"}
+                            maxLength={searchType === 'mobile' ? 10 : undefined}
+                            value={query}
+                            onChange={(e) => setQuery(e.target.value)}
+                            placeholder={
+                                searchType === 'mobile' ? "Enter 10-digit number" :
+                                    searchType === 'vin' ? "Enter Chassis Number" :
+                                        "e.g. TS 09 AB 1234"
+                            }
+                            className={`w-full bg-white/5 border border-white/10 rounded-2xl py-5 pr-6 outline-none focus:border-primary-blue focus:bg-white/10 transition-all font-black tracking-widest uppercase placeholder:text-text-grey/30 placeholder:normal-case ${searchType === 'mobile' ? 'pl-16' : 'pl-6'
+                                }`}
+                        />
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className="absolute right-2 top-2 bottom-2 bg-primary-blue hover:bg-white hover:text-dark-bg text-white px-6 rounded-xl font-black text-xs transition-all flex items-center gap-2 neon-glow disabled:opacity-50 uppercase tracking-wider"
+                        >
+                            {loading ? <Loader2 className="animate-spin" size={16} /> : <Search size={16} />}
+                            {loading ? "Checking" : "Verify"}
+                        </button>
+                    </div>
+                </form>
 
-                                <div className="relative z-10">
-                                    <div className="mb-8">
-                                        <div className="inline-flex items-center gap-2 bg-green-500/10 text-green-400 text-[10px] font-black px-3 py-1 rounded-full border border-green-500/20 uppercase tracking-widest mb-3">
-                                            <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-                                            Active Warranty
-                                        </div>
-                                        <h3 className="text-2xl font-black text-white leading-tight">
-                                            {productDetails?.name || result.ppf_category}
-                                        </h3>
-                                        {productDetails && (
-                                            <p className="text-xs text-text-grey mt-1 line-clamp-1">{productDetails.subtitle || "Premium Protection Film"}</p>
-                                        )}
+                <AnimatePresence>
+                    {error && (
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.95 }}
+                            className="bg-red-500/10 border border-red-500/20 p-6 rounded-2xl flex items-center gap-4 text-red-400 max-w-lg mx-auto mb-8"
+                        >
+                            <AlertCircle className="shrink-0" />
+                            <p className="text-sm font-bold">{error}</p>
+                        </motion.div>
+                    )}
+
+                    {result && (
+                        <motion.div
+                            initial={{ opacity: 0, y: 30 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="max-w-lg mx-auto"
+                        >
+                            <div className="bg-gradient-to-br from-white/10 to-transparent p-1 rounded-[2.5rem] shadow-2xl">
+                                <div className="bg-dark-bg/90 backdrop-blur-xl rounded-[2.4rem] p-8 border border-white/5 relative overflow-hidden">
+                                    {/* Success Badge */}
+                                    <div className="absolute top-0 right-0 p-8 opacity-10 pointer-events-none">
+                                        <CheckCircle2 size={120} />
                                     </div>
 
-                                    <div className="grid grid-cols-2 gap-y-6 gap-x-4 mb-10 text-sm">
-                                        <div>
-                                            <p className="text-[10px] text-text-grey uppercase tracking-widest mb-1 opacity-60">Customer</p>
-                                            <p className="text-white font-bold truncate">{result.name}</p>
+                                    <div className="relative z-10">
+                                        <div className="mb-8">
+                                            <div className="inline-flex items-center gap-2 bg-green-500/10 text-green-400 text-[10px] font-black px-3 py-1 rounded-full border border-green-500/20 uppercase tracking-widest mb-3">
+                                                <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                                                Active Warranty
+                                            </div>
+                                            <h3 className="text-2xl font-black text-white leading-tight">
+                                                {productDetails?.name || result.ppf_category}
+                                            </h3>
+                                            {productDetails && (
+                                                <p className="text-xs text-text-grey mt-1 line-clamp-1">{productDetails.subtitle || "Premium Protection Film"}</p>
+                                            )}
                                         </div>
-                                        <div>
-                                            <p className="text-[10px] text-text-grey uppercase tracking-widest mb-1 opacity-60">Start Date</p>
-                                            <p className="text-white font-bold text-lg font-mono tracking-tight">
-                                                {new Date(result.created_at).toLocaleDateString()}
-                                            </p>
-                                        </div>
-                                        <div>
-                                            <p className="text-[10px] text-text-grey uppercase tracking-widest mb-1 opacity-60">Reg Number</p>
-                                            <p className="text-white font-bold font-mono bg-white/5 px-2 py-1 rounded inline-block">{result.reg_number}</p>
-                                        </div>
-                                        <div>
-                                            <p className="text-[10px] text-text-grey uppercase tracking-widest mb-1 opacity-60">Roll Code</p>
-                                            <p className="text-primary-blue font-bold font-mono">{result.ppf_roll}</p>
-                                        </div>
-                                    </div>
 
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <button
-                                            onClick={() => setShowCertificate(true)}
-                                            className="w-full py-4 bg-white/5 hover:bg-white hover:text-dark-bg border border-white/10 rounded-xl text-white font-black text-xs uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2"
-                                        >
-                                            <Eye size={16} /> View
-                                        </button>
-                                        <button
-                                            onClick={downloadPdf}
-                                            className="w-full py-4 bg-primary-blue hover:bg-blue-400 text-white border border-transparent rounded-xl font-black text-xs uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2 shadow-lg shadow-blue-500/20"
-                                        >
-                                            <Download size={16} /> PDF
-                                        </button>
+                                        <div className="grid grid-cols-2 gap-y-6 gap-x-4 mb-10 text-sm">
+                                            <div>
+                                                <p className="text-[10px] text-text-grey uppercase tracking-widest mb-1 opacity-60">Customer</p>
+                                                <p className="text-white font-bold truncate">{result.name}</p>
+                                            </div>
+                                            <div>
+                                                <p className="text-[10px] text-text-grey uppercase tracking-widest mb-1 opacity-60">Start Date</p>
+                                                <p className="text-white font-bold text-lg font-mono tracking-tight">
+                                                    {new Date(result.created_at).toLocaleDateString()}
+                                                </p>
+                                            </div>
+                                            <div>
+                                                <p className="text-[10px] text-text-grey uppercase tracking-widest mb-1 opacity-60">Reg Number</p>
+                                                <p className="text-white font-bold font-mono bg-white/5 px-2 py-1 rounded inline-block">{result.reg_number}</p>
+                                            </div>
+                                            <div>
+                                                <p className="text-[10px] text-text-grey uppercase tracking-widest mb-1 opacity-60">Roll Code</p>
+                                                <p className="text-primary-blue font-bold font-mono">{result.ppf_roll}</p>
+                                            </div>
+                                        </div>
+
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <button
+                                                onClick={() => setShowCertificate(true)}
+                                                className="w-full py-4 bg-white/5 hover:bg-white hover:text-dark-bg border border-white/10 rounded-xl text-white font-black text-xs uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2"
+                                            >
+                                                <Eye size={16} /> View
+                                            </button>
+                                            <button
+                                                onClick={downloadPdf}
+                                                className="w-full py-4 bg-primary-blue hover:bg-blue-400 text-white border border-transparent rounded-xl font-black text-xs uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2 shadow-lg shadow-blue-500/20"
+                                            >
+                                                <Download size={16} /> PDF
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
 
-            {/* Certificate Modal */}
-            <Dialog.Root open={showCertificate} onOpenChange={setShowCertificate}>
-                <Dialog.Portal>
-                    <Dialog.Overlay className="fixed inset-0 bg-black/90 backdrop-blur-md z-[60] animate-in fade-in" />
-                    <Dialog.Content className="fixed top-[5%] left-1/2 -translate-x-1/2 bg-transparent z-[70] outline-none animate-in zoom-in-95 data-[state=closed]:zoom-out-95">
-                        <VisuallyHidden><Dialog.Title>Warranty Certificate</Dialog.Title></VisuallyHidden>
+                {/* Certificate Modal */}
+                <Dialog.Root open={showCertificate} onOpenChange={setShowCertificate}>
+                    <Dialog.Portal>
+                        <Dialog.Overlay className="fixed inset-0 bg-black/90 backdrop-blur-md z-[60] animate-in fade-in" />
+                        <Dialog.Content className="fixed top-[5%] left-1/2 -translate-x-1/2 bg-transparent z-[70] outline-none animate-in zoom-in-95 data-[state=closed]:zoom-out-95">
+                            <VisuallyHidden><Dialog.Title>Warranty Certificate</Dialog.Title></VisuallyHidden>
 
-                        <div className="relative">
-                            <button
-                                onClick={() => setShowCertificate(false)}
-                                className="absolute top-0 right-1/2 translate-x-1/2 -translate-y-[calc(100%+10px)] text-[#ffffff88] hover:text-white transition-colors"
-                            >
-                                <X size={32} />
-                            </button>
-                            {result && (
-                                <div className="scale-[0.6] md:scale-[0.92] lg:scale-[0.92] origin-top bg-white shadow-2xl">
-                                    <Certificate data={getCertificateData()!} />
-                                </div>
-                            )}
-                        </div>
-                    </Dialog.Content>
-                </Dialog.Portal>
-            </Dialog.Root>
+                            <div className="relative">
+                                <button
+                                    onClick={() => setShowCertificate(false)}
+                                    className="absolute top-0 right-1/2 translate-x-1/2 -translate-y-[calc(100%+10px)] text-[#ffffff88] hover:text-white transition-colors"
+                                >
+                                    <X size={32} />
+                                </button>
+                                {result && (
+                                    <div className="scale-[0.6] md:scale-[0.92] lg:scale-[0.92] origin-top bg-white shadow-2xl">
+                                        <Certificate data={getCertificateData()!} />
+                                    </div>
+                                )}
+                            </div>
+                        </Dialog.Content>
+                    </Dialog.Portal>
+                </Dialog.Root>
 
-            {/* Off-screen Certificate for PDF Capture */}
-            {/* Placed 'fixed' behind content to ensure full rendering by browser layout engine */}
-            <div className="fixed top-0 left-0 -z-50 opacity-0 pointer-events-none w-[794px] h-[1123px] overflow-hidden">
-                <div ref={hiddenCertRef} className="opacity-100">
-                    {result && <Certificate data={getCertificateData()!} />}
+                {/* Off-screen Certificate for PDF Capture */}
+                {/* Placed 'fixed' behind content to ensure full rendering by browser layout engine */}
+                <div className="fixed top-0 left-0 -z-50 opacity-0 pointer-events-none w-[794px] h-[1123px] overflow-hidden">
+                    <div ref={hiddenCertRef} className="opacity-100">
+                        {result && <Certificate data={getCertificateData()!} />}
+                    </div>
                 </div>
-            </div>
 
-        </div>
+            </div>
+        </GlassSurface>
     );
 }

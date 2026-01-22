@@ -13,6 +13,7 @@ const steps = [
 
 import { siteConfig } from "@/lib/site-config";
 import { useGlobalStore } from "@/context/GlobalStore";
+import GlassSurface from "./GlassSurface";
 
 // const ppfCategories = siteConfig.productCategories; // We will use GlobalStore if available
 
@@ -259,318 +260,329 @@ export default function WarrantyForm() {
     }
 
     return (
-        <div className="w-full max-w-3xl mx-auto bg-[#0a0a0a]/80 backdrop-blur-xl rounded-3xl border border-white/5 overflow-hidden shadow-2xl">
-            {/* Header / Steps */}
-            <div className="bg-black/40 border-b border-white/5 p-4 md:p-8">
-                <div className="flex justify-between items-center relative">
-                    {steps.map((s, i) => {
-                        const Icon = s.icon;
-                        const isActive = step >= s.id;
-                        const isCurrent = step === s.id;
-                        return (
-                            <div key={s.id} className="relative z-10 flex flex-col items-center gap-2 flex-1">
-                                <div
-                                    className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center transition-all duration-500 border ${isActive
-                                        ? "bg-primary-blue border-primary-blue text-white shadow-[0_0_15px_rgba(0,170,255,0.5)]"
-                                        : "bg-white/5 border-white/10 text-white/30"
-                                        }`}
-                                >
-                                    <Icon size={18} />
+        <GlassSurface
+            borderRadius={24}
+            opacity={0.85}
+            backgroundOpacity={0.1}
+            blur={20}
+            borderWidth={0.1}
+            width="auto"
+            height="auto"
+            className="p-0 shadow-2xl"
+        >
+            <div className="w-full mx-auto rounded-3xl overflow-hidden">
+                {/* Header / Steps */}
+                <div className="bg-black/10 border-b border-white/5 p-4 md:p-8">
+                    <div className="flex justify-between items-center relative">
+                        {steps.map((s, i) => {
+                            const Icon = s.icon;
+                            const isActive = step >= s.id;
+                            const isCurrent = step === s.id;
+                            return (
+                                <div key={s.id} className="relative z-10 flex flex-col items-center gap-2 flex-1">
+                                    <div
+                                        className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center transition-all duration-500 border ${isActive
+                                            ? "bg-primary-blue border-primary-blue text-white shadow-[0_0_15px_rgba(0,170,255,0.5)]"
+                                            : "bg-white/5 border-white/10 text-white/30"
+                                            }`}
+                                    >
+                                        <Icon size={18} />
+                                    </div>
+                                    <span
+                                        className={`text-[10px] md:text-xs font-bold uppercase tracking-wider transition-colors duration-300 ${isActive ? "text-primary-blue" : "text-white/20"
+                                            }`}
+                                    >
+                                        {s.title}
+                                    </span>
                                 </div>
-                                <span
-                                    className={`text-[10px] md:text-xs font-bold uppercase tracking-wider transition-colors duration-300 ${isActive ? "text-primary-blue" : "text-white/20"
-                                        }`}
-                                >
-                                    {s.title}
-                                </span>
-                            </div>
-                        );
-                    })}
-                    {/* Progress Bar Line */}
-                    <div className="absolute top-5 md:top-6 left-0 w-full h-[2px] bg-white/5 -z-0">
-                        <div
-                            className="h-full bg-primary-blue transition-all duration-500"
-                            style={{ width: `${((step - 1) / (steps.length - 1)) * 100}%` }}
-                        />
+                            );
+                        })}
+                        {/* Progress Bar Line */}
+                        <div className="absolute top-5 md:top-6 left-0 w-full h-[2px] bg-white/5 -z-0">
+                            <div
+                                className="h-full bg-primary-blue transition-all duration-500"
+                                style={{ width: `${((step - 1) / (steps.length - 1)) * 100}%` }}
+                            />
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            {/* Form Content */}
-            <div className="p-6 md:p-10 relative">
-                <AnimatePresence mode="wait">
-                    <motion.form
-                        key={step}
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -20 }}
-                        transition={{ duration: 0.2 }}
-                        onSubmit={handleSubmit}
-                        className="space-y-6"
-                    >
-                        {step === 1 && (
-                            <div className="space-y-5">
-                                <div className="space-y-2">
-                                    <label className="text-xs uppercase font-bold text-white/50 tracking-wider">Full Name <span className="text-red-500">*</span></label>
-                                    <input
-                                        type="text"
-                                        required
-                                        value={formData.name}
-                                        onChange={(e) => updateField("name", e.target.value)}
-                                        className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white placeholder:text-white/20 focus:border-primary-blue focus:ring-1 focus:ring-primary-blue transition-all outline-none"
-                                        placeholder="Enter vehicle owner's name"
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <label className="text-xs uppercase font-bold text-white/50 tracking-wider">Phone Number <span className="text-red-500">*</span></label>
-                                    <div className="flex bg-white/5 border border-white/10 rounded-xl overflow-hidden focus-within:border-primary-blue focus-within:ring-1 focus-within:ring-primary-blue transition-all">
-                                        <span className="bg-white/5 text-white/50 px-4 py-4 flex items-center justify-center border-r border-white/10">+91</span>
-                                        <input
-                                            type="tel"
-                                            required
-                                            value={formData.phone}
-                                            onChange={(e) => updateField("phone", e.target.value)}
-                                            className="flex-1 bg-transparent border-none p-4 text-white placeholder:text-white/20 outline-none"
-                                            placeholder="9876543210"
-                                            maxLength={10}
-                                        />
-                                    </div>
-                                </div>
-                                <div className="space-y-2">
-                                    <label className="text-xs uppercase font-bold text-white/50 tracking-wider">Email Address <span className="text-white/20">(Optional)</span></label>
-                                    <input
-                                        type="email"
-                                        value={formData.email}
-                                        onChange={(e) => updateField("email", e.target.value)}
-                                        className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white placeholder:text-white/20 focus:border-primary-blue focus:ring-1 focus:ring-primary-blue transition-all outline-none"
-                                        placeholder="name@example.com"
-                                    />
-                                </div>
-                            </div>
-                        )}
-
-                        {step === 2 && (
-                            <div className="space-y-5">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                {/* Form Content */}
+                <div className="p-6 md:p-10 relative">
+                    <AnimatePresence mode="wait">
+                        <motion.form
+                            key={step}
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -20 }}
+                            transition={{ duration: 0.2 }}
+                            onSubmit={handleSubmit}
+                            className="space-y-6"
+                        >
+                            {step === 1 && (
+                                <div className="space-y-5">
                                     <div className="space-y-2">
-                                        <label className="text-xs uppercase font-bold text-white/50 tracking-wider">Registration Number <span className="text-red-500">*</span></label>
+                                        <label className="text-xs uppercase font-bold text-white/50 tracking-wider">Full Name <span className="text-red-500">*</span></label>
                                         <input
                                             type="text"
                                             required
-                                            value={formData.regNumber}
-                                            onChange={(e) => updateField("regNumber", e.target.value)}
-                                            className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white placeholder:text-white/20 focus:border-primary-blue focus:ring-1 focus:ring-primary-blue transition-all outline-none uppercase font-mono"
-                                            placeholder="TS 09 AB 1234"
+                                            value={formData.name}
+                                            onChange={(e) => updateField("name", e.target.value)}
+                                            className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white placeholder:text-white/20 focus:border-primary-blue focus:ring-1 focus:ring-primary-blue transition-all outline-none"
+                                            placeholder="Enter vehicle owner's name"
                                         />
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-xs uppercase font-bold text-white/50 tracking-wider">Chassis / VIN <span className="text-white/20">(Optional)</span></label>
-                                        <input
-                                            type="text"
-                                            value={formData.chassisNumber}
-                                            onChange={(e) => updateField("chassisNumber", e.target.value)}
-                                            className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white placeholder:text-white/20 focus:border-primary-blue focus:ring-1 focus:ring-primary-blue transition-all outline-none uppercase"
-                                            placeholder="MA3..."
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                                    <div className="space-y-2">
-                                        <label className="text-xs uppercase font-bold text-white/50 tracking-wider">PPF Roll Code <span className="text-red-500">*</span></label>
-                                        <input
-                                            type="text"
-                                            required
-                                            value={formData.ppfRoll}
-                                            onChange={(e) => updateField("ppfRoll", e.target.value)}
-                                            className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white placeholder:text-white/20 focus:border-primary-blue focus:ring-1 focus:ring-primary-blue transition-all outline-none uppercase"
-                                            placeholder="GT-12345"
-                                        />
-                                        <p className="text-[10px] text-white/30 ml-1">Must start with GT, GN, or GR</p>
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label className="text-xs uppercase font-bold text-white/50 tracking-wider">PPF Product Category <span className="text-red-500">*</span></label>
-                                        <div className="relative">
-                                            <div
-                                                onClick={() => setDropdownOpen(!dropdownOpen)}
-                                                className={`w-full bg-white/5 border ${dropdownOpen ? 'border-primary-blue ring-1 ring-primary-blue' : 'border-white/10'} rounded-xl p-4 text-white cursor-pointer flex justify-between items-center transition-all hover:bg-white/10`}
-                                            >
-                                                <span className={formData.ppfCategory ? "text-white" : "text-white/20"}>
-                                                    {formData.ppfCategory || "Select Category"}
-                                                </span>
-                                                <ArrowRight size={14} className={`text-white/50 transition-transform duration-300 ${dropdownOpen ? '-rotate-90' : 'rotate-90'}`} />
-                                            </div>
-
-                                            <AnimatePresence>
-                                                {dropdownOpen && (
-                                                    <motion.div
-                                                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                                                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                                                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                                                        transition={{ duration: 0.2 }}
-                                                        className="absolute top-full left-0 right-0 mt-2 bg-[#0a0a0a] border border-white/10 rounded-xl shadow-2xl overflow-hidden z-50 backdrop-blur-xl"
-                                                    >
-                                                        {ppfCategories.map((cat) => (
-                                                            <div
-                                                                key={cat}
-                                                                onClick={() => {
-                                                                    updateField("ppfCategory", cat);
-                                                                    setDropdownOpen(false);
-                                                                }}
-                                                                className={`p-4 cursor-pointer text-sm font-medium transition-colors border-b border-white/5 last:border-none flex items-center justify-between group ${formData.ppfCategory === cat
-                                                                    ? "bg-primary-blue/10 text-primary-blue"
-                                                                    : "text-white/70 hover:bg-white/5 hover:text-white"
-                                                                    }`}
-                                                            >
-                                                                {cat}
-                                                                {formData.ppfCategory === cat && <CheckCircle size={14} />}
-                                                            </div>
-                                                        ))}
-                                                    </motion.div>
-                                                )}
-                                            </AnimatePresence>
-                                        </div>
-                                        {/* Overlay to close dropdown when clicking outside */}
-                                        {dropdownOpen && (
-                                            <div className="fixed inset-0 z-40" onClick={() => setDropdownOpen(false)} />
-                                        )}
-                                    </div>
-                                </div>
-                                <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-5">
-                                    <div className="space-y-2">
-                                        <label className="text-xs uppercase font-bold text-white/50 tracking-wider">Vehicle Image <span className="text-white/20">(Optional)</span></label>
-                                        <div className="border border-dashed border-white/20 rounded-xl p-6 text-center hover:bg-white/5 transition-colors cursor-pointer relative">
+                                        <label className="text-xs uppercase font-bold text-white/50 tracking-wider">Phone Number <span className="text-red-500">*</span></label>
+                                        <div className="flex bg-white/5 border border-white/10 rounded-xl overflow-hidden focus-within:border-primary-blue focus-within:ring-1 focus-within:ring-primary-blue transition-all">
+                                            <span className="bg-white/5 text-white/50 px-4 py-4 flex items-center justify-center border-r border-white/10">+91</span>
                                             <input
-                                                type="file"
-                                                accept="image/*"
-                                                onChange={(e) => handleFileChange("vehicleImage", e.target.files?.[0] || null)}
-                                                className="absolute inset-0 opacity-0 cursor-pointer"
+                                                type="tel"
+                                                required
+                                                value={formData.phone}
+                                                onChange={(e) => updateField("phone", e.target.value)}
+                                                className="flex-1 bg-transparent border-none p-4 text-white placeholder:text-white/20 outline-none"
+                                                placeholder="9876543210"
+                                                maxLength={10}
                                             />
-                                            <div className="flex flex-col items-center gap-2">
-                                                <Upload className="text-primary-blue" size={24} />
-                                                <span className="text-sm text-white/70">
-                                                    {files.vehicleImage ? files.vehicleImage.name : "Click to upload vehicle photo"}
-                                                </span>
-                                            </div>
                                         </div>
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-xs uppercase font-bold text-white/50 tracking-wider">Vehicle Image <span className="text-white/20">(Optional)</span></label>
-                                        <div className="border border-dashed border-white/20 rounded-xl p-6 text-center hover:bg-white/5 transition-colors cursor-pointer relative">
+                                        <label className="text-xs uppercase font-bold text-white/50 tracking-wider">Email Address <span className="text-white/20">(Optional)</span></label>
+                                        <input
+                                            type="email"
+                                            value={formData.email}
+                                            onChange={(e) => updateField("email", e.target.value)}
+                                            className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white placeholder:text-white/20 focus:border-primary-blue focus:ring-1 focus:ring-primary-blue transition-all outline-none"
+                                            placeholder="name@example.com"
+                                        />
+                                    </div>
+                                </div>
+                            )}
+
+                            {step === 2 && (
+                                <div className="space-y-5">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                        <div className="space-y-2">
+                                            <label className="text-xs uppercase font-bold text-white/50 tracking-wider">Registration Number <span className="text-red-500">*</span></label>
                                             <input
-                                                type="file"
-                                                accept="image/*"
-                                                onChange={(e) => handleFileChange("rcImage", e.target.files?.[0] || null)}
-                                                className="absolute inset-0 opacity-0 cursor-pointer"
+                                                type="text"
+                                                required
+                                                value={formData.regNumber}
+                                                onChange={(e) => updateField("regNumber", e.target.value)}
+                                                className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white placeholder:text-white/20 focus:border-primary-blue focus:ring-1 focus:ring-primary-blue transition-all outline-none uppercase font-mono"
+                                                placeholder="TS 09 AB 1234"
                                             />
-                                            <div className="flex flex-col items-center gap-2">
-                                                <Upload className="text-primary-blue" size={24} />
-                                                <span className="text-sm text-white/70">
-                                                    {files.rcImage ? files.rcImage.name : "Click to upload RC photo"}
-                                                </span>
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-xs uppercase font-bold text-white/50 tracking-wider">Chassis / VIN <span className="text-white/20">(Optional)</span></label>
+                                            <input
+                                                type="text"
+                                                value={formData.chassisNumber}
+                                                onChange={(e) => updateField("chassisNumber", e.target.value)}
+                                                className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white placeholder:text-white/20 focus:border-primary-blue focus:ring-1 focus:ring-primary-blue transition-all outline-none uppercase"
+                                                placeholder="MA3..."
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                        <div className="space-y-2">
+                                            <label className="text-xs uppercase font-bold text-white/50 tracking-wider">PPF Roll Code <span className="text-red-500">*</span></label>
+                                            <input
+                                                type="text"
+                                                required
+                                                value={formData.ppfRoll}
+                                                onChange={(e) => updateField("ppfRoll", e.target.value)}
+                                                className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white placeholder:text-white/20 focus:border-primary-blue focus:ring-1 focus:ring-primary-blue transition-all outline-none uppercase"
+                                                placeholder="GT-12345"
+                                            />
+                                            <p className="text-[10px] text-white/30 ml-1">Must start with GT, GN, or GR</p>
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-xs uppercase font-bold text-white/50 tracking-wider">PPF Product Category <span className="text-red-500">*</span></label>
+                                            <div className="relative">
+                                                <div
+                                                    onClick={() => setDropdownOpen(!dropdownOpen)}
+                                                    className={`w-full bg-white/5 border ${dropdownOpen ? 'border-primary-blue ring-1 ring-primary-blue' : 'border-white/10'} rounded-xl p-4 text-white cursor-pointer flex justify-between items-center transition-all hover:bg-white/10`}
+                                                >
+                                                    <span className={formData.ppfCategory ? "text-white" : "text-white/20"}>
+                                                        {formData.ppfCategory || "Select Category"}
+                                                    </span>
+                                                    <ArrowRight size={14} className={`text-white/50 transition-transform duration-300 ${dropdownOpen ? '-rotate-90' : 'rotate-90'}`} />
+                                                </div>
+
+                                                <AnimatePresence>
+                                                    {dropdownOpen && (
+                                                        <motion.div
+                                                            initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                                                            exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                                                            transition={{ duration: 0.2 }}
+                                                            className="absolute top-full left-0 right-0 mt-2 bg-[#0a0a0a] border border-white/10 rounded-xl shadow-2xl overflow-hidden z-50 backdrop-blur-xl"
+                                                        >
+                                                            {ppfCategories.map((cat) => (
+                                                                <div
+                                                                    key={cat}
+                                                                    onClick={() => {
+                                                                        updateField("ppfCategory", cat);
+                                                                        setDropdownOpen(false);
+                                                                    }}
+                                                                    className={`p-4 cursor-pointer text-sm font-medium transition-colors border-b border-white/5 last:border-none flex items-center justify-between group ${formData.ppfCategory === cat
+                                                                        ? "bg-primary-blue/10 text-primary-blue"
+                                                                        : "text-white/70 hover:bg-white/5 hover:text-white"
+                                                                        }`}
+                                                                >
+                                                                    {cat}
+                                                                    {formData.ppfCategory === cat && <CheckCircle size={14} />}
+                                                                </div>
+                                                            ))}
+                                                        </motion.div>
+                                                    )}
+                                                </AnimatePresence>
+                                            </div>
+                                            {/* Overlay to close dropdown when clicking outside */}
+                                            {dropdownOpen && (
+                                                <div className="fixed inset-0 z-40" onClick={() => setDropdownOpen(false)} />
+                                            )}
+                                        </div>
+                                    </div>
+                                    <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-5">
+                                        <div className="space-y-2">
+                                            <label className="text-xs uppercase font-bold text-white/50 tracking-wider">Vehicle Image <span className="text-white/20">(Optional)</span></label>
+                                            <div className="border border-dashed border-white/20 rounded-xl p-6 text-center hover:bg-white/5 transition-colors cursor-pointer relative">
+                                                <input
+                                                    type="file"
+                                                    accept="image/*"
+                                                    onChange={(e) => handleFileChange("vehicleImage", e.target.files?.[0] || null)}
+                                                    className="absolute inset-0 opacity-0 cursor-pointer"
+                                                />
+                                                <div className="flex flex-col items-center gap-2">
+                                                    <Upload className="text-primary-blue" size={24} />
+                                                    <span className="text-sm text-white/70">
+                                                        {files.vehicleImage ? files.vehicleImage.name : "Click to upload vehicle photo"}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-xs uppercase font-bold text-white/50 tracking-wider">Vehicle Image <span className="text-white/20">(Optional)</span></label>
+                                            <div className="border border-dashed border-white/20 rounded-xl p-6 text-center hover:bg-white/5 transition-colors cursor-pointer relative">
+                                                <input
+                                                    type="file"
+                                                    accept="image/*"
+                                                    onChange={(e) => handleFileChange("rcImage", e.target.files?.[0] || null)}
+                                                    className="absolute inset-0 opacity-0 cursor-pointer"
+                                                />
+                                                <div className="flex flex-col items-center gap-2">
+                                                    <Upload className="text-primary-blue" size={24} />
+                                                    <span className="text-sm text-white/70">
+                                                        {files.rcImage ? files.rcImage.name : "Click to upload RC photo"}
+                                                    </span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        )}
+                            )}
 
-                        {step === 3 && (
-                            <div className="space-y-5">
-                                <div className="space-y-2">
-                                    <label className="text-xs uppercase font-bold text-white/50 tracking-wider">Dealer / Studio Name <span className="text-red-500">*</span></label>
-                                    <input
-                                        type="text"
-                                        required
-                                        value={formData.dealerName}
-                                        onChange={(e) => updateField("dealerName", e.target.value)}
-                                        className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white placeholder:text-white/20 focus:border-primary-blue focus:ring-1 focus:ring-primary-blue transition-all outline-none"
-                                        placeholder="Gentech Authorized Studio"
-                                    />
-                                </div>
-
-                                <div className="space-y-2">
-                                    <label className="text-xs uppercase font-bold text-white/50 tracking-wider">Installer Mobile <span className="text-red-500">*</span></label>
-                                    <div className="flex bg-white/5 border border-white/10 rounded-xl overflow-hidden focus-within:border-primary-blue focus-within:ring-1 focus-within:ring-primary-blue transition-all">
-                                        <span className="bg-white/5 text-white/50 px-4 py-4 flex items-center justify-center border-r border-white/10">+91</span>
+                            {step === 3 && (
+                                <div className="space-y-5">
+                                    <div className="space-y-2">
+                                        <label className="text-xs uppercase font-bold text-white/50 tracking-wider">Dealer / Studio Name <span className="text-red-500">*</span></label>
                                         <input
-                                            type="tel"
+                                            type="text"
                                             required
-                                            value={formData.installerMobile}
-                                            onChange={(e) => updateField("installerMobile", e.target.value)}
-                                            className="flex-1 bg-transparent border-none p-4 text-white placeholder:text-white/20 outline-none"
-                                            placeholder="9876543210"
-                                            maxLength={10}
+                                            value={formData.dealerName}
+                                            onChange={(e) => updateField("dealerName", e.target.value)}
+                                            className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white placeholder:text-white/20 focus:border-primary-blue focus:ring-1 focus:ring-primary-blue transition-all outline-none"
+                                            placeholder="Gentech Authorized Studio"
+                                        />
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <label className="text-xs uppercase font-bold text-white/50 tracking-wider">Installer Mobile <span className="text-red-500">*</span></label>
+                                        <div className="flex bg-white/5 border border-white/10 rounded-xl overflow-hidden focus-within:border-primary-blue focus-within:ring-1 focus-within:ring-primary-blue transition-all">
+                                            <span className="bg-white/5 text-white/50 px-4 py-4 flex items-center justify-center border-r border-white/10">+91</span>
+                                            <input
+                                                type="tel"
+                                                required
+                                                value={formData.installerMobile}
+                                                onChange={(e) => updateField("installerMobile", e.target.value)}
+                                                className="flex-1 bg-transparent border-none p-4 text-white placeholder:text-white/20 outline-none"
+                                                placeholder="9876543210"
+                                                maxLength={10}
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <label className="text-xs uppercase font-bold text-white/50 tracking-wider">City / Location <span className="text-red-500">*</span></label>
+                                        <input
+                                            type="text"
+                                            required
+                                            value={formData.installationLocation}
+                                            onChange={(e) => updateField("installationLocation", e.target.value)}
+                                            className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white placeholder:text-white/20 focus:border-primary-blue focus:ring-1 focus:ring-primary-blue transition-all outline-none"
+                                            placeholder="Hyderabad, Khajaguda"
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-xs uppercase font-bold text-white/50 tracking-wider">Additional Message <span className="text-white/20">(Optional)</span></label>
+                                        <textarea
+                                            value={formData.message}
+                                            onChange={(e) => updateField("message", e.target.value)}
+                                            className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white placeholder:text-white/20 focus:border-primary-blue focus:ring-1 focus:ring-primary-blue transition-all outline-none h-24 resize-none"
+                                            placeholder="Any notes..."
                                         />
                                     </div>
                                 </div>
+                            )}
+                        </motion.form>
+                    </AnimatePresence>
 
-                                <div className="space-y-2">
-                                    <label className="text-xs uppercase font-bold text-white/50 tracking-wider">City / Location <span className="text-red-500">*</span></label>
-                                    <input
-                                        type="text"
-                                        required
-                                        value={formData.installationLocation}
-                                        onChange={(e) => updateField("installationLocation", e.target.value)}
-                                        className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white placeholder:text-white/20 focus:border-primary-blue focus:ring-1 focus:ring-primary-blue transition-all outline-none"
-                                        placeholder="Hyderabad, Khajaguda"
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <label className="text-xs uppercase font-bold text-white/50 tracking-wider">Additional Message <span className="text-white/20">(Optional)</span></label>
-                                    <textarea
-                                        value={formData.message}
-                                        onChange={(e) => updateField("message", e.target.value)}
-                                        className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white placeholder:text-white/20 focus:border-primary-blue focus:ring-1 focus:ring-primary-blue transition-all outline-none h-24 resize-none"
-                                        placeholder="Any notes..."
-                                    />
-                                </div>
-                            </div>
-                        )}
-                    </motion.form>
-                </AnimatePresence>
+                    {error && (
+                        <div className="mt-6 p-4 bg-red-500/10 border border-red-500/20 rounded-xl flex items-center gap-3 text-red-400 text-sm">
+                            <AlertCircle size={18} />
+                            {error}
+                        </div>
+                    )}
+                </div>
 
-                {error && (
-                    <div className="mt-6 p-4 bg-red-500/10 border border-red-500/20 rounded-xl flex items-center gap-3 text-red-400 text-sm">
-                        <AlertCircle size={18} />
-                        {error}
-                    </div>
-                )}
-            </div>
-
-            {/* Footer Buttons */}
-            <div className="p-6 md:p-8 border-t border-white/5 flex justify-between bg-black/40">
-                <button
-                    onClick={handleBack}
-                    disabled={step === 1 || isSubmitting}
-                    className="flex items-center gap-2 px-6 py-3 rounded-xl font-bold uppercase tracking-wider text-sm text-white/50 hover:text-white hover:bg-white/5 transition-colors disabled:opacity-30 disabled:hover:bg-transparent"
-                >
-                    <ArrowLeft size={16} /> Back
-                </button>
-
-                {step < 3 ? (
+                {/* Footer Buttons */}
+                <div className="p-6 md:p-8 border-t border-white/5 flex justify-between bg-black/10">
                     <button
-                        onClick={handleNext}
-                        className="flex items-center gap-3 bg-primary-blue text-white px-8 py-3 rounded-xl font-bold uppercase tracking-widest text-sm hover:bg-blue-600 transition-colors shadow-[0_0_20px_rgba(0,170,255,0.3)] hover:shadow-[0_0_30px_rgba(0,170,255,0.5)]"
+                        onClick={handleBack}
+                        disabled={step === 1 || isSubmitting}
+                        className="flex items-center gap-2 px-6 py-3 rounded-xl font-bold uppercase tracking-wider text-sm text-white/50 hover:text-white hover:bg-white/5 transition-colors disabled:opacity-30 disabled:hover:bg-transparent"
                     >
-                        Next <ArrowRight size={16} />
+                        <ArrowLeft size={16} /> Back
                     </button>
-                ) : (
-                    <button
-                        onClick={handleSubmit}
-                        disabled={isSubmitting}
-                        className="flex items-center gap-3 bg-primary-blue text-white px-8 py-3 rounded-xl font-bold uppercase tracking-widest text-sm hover:bg-blue-600 transition-colors shadow-[0_0_20px_rgba(0,170,255,0.3)] hover:shadow-[0_0_30px_rgba(0,170,255,0.5)] disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                        {isSubmitting ? (
-                            <>
-                                <Loader2 className="animate-spin" size={16} /> Submitting...
-                            </>
-                        ) : (
-                            <>Submit Warranty</>
-                        )}
-                    </button>
-                )}
+
+                    {step < 3 ? (
+                        <button
+                            onClick={handleNext}
+                            className="flex items-center gap-3 bg-primary-blue text-white px-8 py-3 rounded-xl font-bold uppercase tracking-widest text-sm hover:bg-blue-600 transition-colors shadow-[0_0_20px_rgba(0,170,255,0.3)] hover:shadow-[0_0_30px_rgba(0,170,255,0.5)]"
+                        >
+                            Next <ArrowRight size={16} />
+                        </button>
+                    ) : (
+                        <button
+                            onClick={handleSubmit}
+                            disabled={isSubmitting}
+                            className="flex items-center gap-3 bg-primary-blue text-white px-8 py-3 rounded-xl font-bold uppercase tracking-widest text-sm hover:bg-blue-600 transition-colors shadow-[0_0_20px_rgba(0,170,255,0.3)] hover:shadow-[0_0_30px_rgba(0,170,255,0.5)] disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            {isSubmitting ? (
+                                <>
+                                    <Loader2 className="animate-spin" size={16} /> Submitting...
+                                </>
+                            ) : (
+                                <>Submit Warranty</>
+                            )}
+                        </button>
+                    )}
+                </div>
             </div>
-        </div>
+        </GlassSurface>
     );
 }
